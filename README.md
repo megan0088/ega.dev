@@ -1,73 +1,157 @@
-# My Next.js App
+# Muhamad Ega Nugraha — Portfolio
 
-This is a Next.js application built with TypeScript. It serves as a template for creating modern web applications with server-side rendering and static site generation.
+> Personal portfolio website with a fullstack admin dashboard to manage experience and projects dynamically — no code editing required.
+
+**Live:** [portofolio-ega-zeta.vercel.app](https://portofolio-ega-zeta.vercel.app)
+
+---
+
+## About
+
+This is my personal portfolio built from scratch using modern web technologies. It features a public-facing portfolio site and a protected admin dashboard where I can add, edit, or delete my experience and projects directly from the browser — without touching the code.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v3 |
+| Database | Supabase (PostgreSQL) |
+| Auth | Supabase Auth (Email + Google OAuth) |
+| Animation | Framer Motion |
+| Forms | React Hook Form + Zod |
+| Notifications | react-hot-toast |
+| Deployment | Vercel |
+
+---
+
+## Features
+
+### Public Portfolio
+- **Hero** — Introduction, tech badges, social links
+- **About** — Skills breakdown by category
+- **Experience** — Dynamic timeline pulled from database (work, education, competition)
+- **Projects** — Project cards with tech stack, GitHub & live demo links
+- **Contact** — Contact info with direct links
+
+### Admin Dashboard (`/admin`)
+- Protected route — login required
+- Google OAuth + Email/Password login
+- Full CRUD for **Experience** (add, edit, delete)
+- Full CRUD for **Projects** (add, edit, delete, featured toggle)
+- Modal forms with validation
+- Toast notifications for every action
+- Real-time optimistic UI updates
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx               # Public portfolio (server component)
+│   ├── admin/
+│   │   ├── page.tsx           # Admin dashboard
+│   │   └── login/page.tsx     # Login page
+│   └── auth/callback/         # OAuth callback handler
+├── components/
+│   ├── sections/              # Portfolio sections (Hero, About, etc.)
+│   ├── admin/                 # Admin UI (tables, forms)
+│   └── ui/                    # Shared components (Button, Modal, Input...)
+├── lib/
+│   ├── supabase/              # Supabase client (browser, server, middleware)
+│   ├── api/                   # CRUD functions (experiences, projects)
+│   ├── validations.ts         # Zod schemas
+│   └── utils.ts               # Helper functions
+├── hooks/                     # useExperiences, useProjects
+├── types/                     # TypeScript interfaces
+└── proxy.ts                   # Route protection for /admin
+```
+
+---
 
 ## Getting Started
 
-To get started with this project, follow the instructions below.
-
 ### Prerequisites
 
-Make sure you have the following installed:
+- Node.js 18+
+- A [Supabase](https://supabase.com) account (free tier works)
 
-- Node.js (version 12.22.0 or later)
-- npm (version 6.14.0 or later)
+### 1. Clone & Install
 
-### Installation
+```bash
+git clone https://github.com/eganugraha08/portfolio-ega.git
+cd portfolio-ega
+npm install
+```
 
-1. Clone the repository:
+### 2. Setup Supabase
 
-   ```bash
-   git clone https://github.com/yourusername/my-nextjs-app.git
-   ```
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Go to **SQL Editor** → paste the contents of [`supabase-schema.sql`](./supabase-schema.sql) → click **Run**
+3. Go to **Authentication → Users → Add user** → create your admin account
 
-2. Navigate to the project directory:
+### 3. Configure Environment Variables
 
-   ```bash
-   cd my-nextjs-app
-   ```
+```bash
+cp .env.local.example .env.local
+```
 
-3. Install the dependencies:
+Fill in your values from **Supabase → Project Settings → API**:
 
-   ```bash
-   npm install
-   ```
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
 
-### Running the Development Server
-
-To start the development server, run:
+### 4. Run Locally
 
 ```bash
 npm run dev
 ```
 
-This will start the server at `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) — portfolio is live.
+Open [http://localhost:3000/admin](http://localhost:3000/admin) — admin dashboard.
 
-### Building for Production
+---
 
-To build the application for production, run:
+## Deploy to Vercel
 
-```bash
-npm run build
-```
+1. Push to GitHub
+2. Import repo at [vercel.com/new](https://vercel.com/new)
+3. Add the same environment variables in Vercel project settings
+4. Click **Deploy**
 
-This will create an optimized build of your application in the `.next` directory.
+Vercel auto-detects Next.js — no extra config needed.
 
-### Running in Production
+---
 
-To start the production server, run:
+## Google OAuth Setup (Optional)
 
-```bash
-npm start
-```
+To enable "Continue with Google" on the login page:
 
-### Features
+1. Go to [Google Cloud Console](https://console.cloud.google.com) → **Credentials → Create OAuth Client ID**
+2. Add authorized redirect URI:
+   ```
+   https://your-project.supabase.co/auth/v1/callback
+   ```
+3. Copy **Client ID** and **Client Secret**
+4. In Supabase → **Authentication → Providers → Google** → paste credentials → Save
 
-- TypeScript support for type safety and better developer experience.
-- API routes for server-side functionality.
-- Custom App and Document components for enhanced layout and styling.
-- Global and modular CSS for styling.
+---
 
-### License
+## Contact
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+**Muhamad Ega Nugraha**
+- Email: [eganeue@gmail.com](mailto:eganeue@gmail.com)
+- LinkedIn: [linkedin.com/in/ega-nugraha](https://linkedin.com/in/ega-nugraha)
+- Instagram: [@eganugraha08](https://instagram.com/eganugraha08)
+- Phone: +62 812-9314-8932
+
+---
+
+© 2025 Muhamad Ega Nugraha. Built with Next.js & Supabase.
