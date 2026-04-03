@@ -38,6 +38,8 @@ export interface Profile {
   email: string | null;
   phone: string | null;
   instagram_url: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
   updated_at: string;
 }
 

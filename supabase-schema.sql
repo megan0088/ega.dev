@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS profile (
   email               TEXT,
   phone               TEXT,
   instagram_url       TEXT,
+  seo_title           TEXT,
+  seo_description     TEXT,
   updated_at          TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT profile_single_row CHECK (id = 1)
 );
@@ -68,6 +70,10 @@ CREATE TABLE IF NOT EXISTS skills (
   sort_order  INTEGER NOT NULL DEFAULT 0,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add SEO columns if not yet exist (safe migration for existing deployments)
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS seo_title TEXT;
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS seo_description TEXT;
 
 -- ============================================================
 -- Row Level Security (RLS)

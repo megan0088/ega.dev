@@ -1,6 +1,7 @@
 export const revalidate = 0;
 
 import { createClient } from '@/lib/supabase/server';
+import type { Metadata } from 'next';
 import Navbar from '@/components/sections/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
@@ -9,6 +10,21 @@ import ExperienceSection from '@/components/sections/ExperienceSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import ContactSection from '@/components/sections/ContactSection';
 import type { Experience, Project, Profile, SkillCategory, Skill } from '@/types';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const { data: profile } = await supabase.from('profile').select('name, title, seo_title, seo_description').single();
+
+  const title = profile?.seo_title || (profile ? `${profile.name} — ${profile.title}` : 'Portfolio');
+  const description = profile?.seo_description || 'Software Engineer & SAP B1 Technical Consultant';
+
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+    twitter: { title, description },
+  };
+}
 
 async function getData() {
   try {

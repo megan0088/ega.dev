@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { projectSchema, type ProjectSchema } from '@/lib/validations';
@@ -8,6 +8,7 @@ import type { Project } from '@/types';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
+import ImageUpload from '@/components/ui/ImageUpload';
 
 interface ProjectFormProps {
   onSubmit: (data: ProjectSchema) => Promise<void>;
@@ -16,12 +17,7 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: ProjectFormProps) {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ProjectSchema>({
+  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<ProjectSchema>({
     resolver: zodResolver(projectSchema),
     defaultValues: defaultValues
       ? {
@@ -49,6 +45,8 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
     // @ts-expect-error useFieldArray works with string arrays
     name: 'tech_stack',
   });
+
+  const imageUrl = useWatch({ control, name: 'image_url' });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -78,56 +76,37 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
                 {...register(`tech_stack.${index}` as const)}
               />
               {fields.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors"
-                >
+                <button type="button" onClick={() => remove(index)}
+                  className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors">
                   <Trash2 size={15} />
                 </button>
               )}
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={() => append('')}
-          className="mt-2 flex items-center gap-1.5 text-sm text-brand-400 hover:text-brand-300 transition-colors"
-        >
-          <Plus size={15} />
-          Add technology
+        <button type="button" onClick={() => append('')}
+          className="mt-2 flex items-center gap-1.5 text-sm text-brand-400 hover:text-brand-300 transition-colors">
+          <Plus size={15} />Add technology
         </button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="GitHub URL"
-          placeholder="https://github.com/..."
-          error={errors.github_url?.message}
-          {...register('github_url')}
-        />
-        <Input
-          label="Live URL"
-          placeholder="https://..."
-          error={errors.live_url?.message}
-          {...register('live_url')}
-        />
+        <Input label="GitHub URL" placeholder="https://github.com/..." error={errors.github_url?.message} {...register('github_url')} />
+        <Input label="Live URL" placeholder="https://..." error={errors.live_url?.message} {...register('live_url')} />
       </div>
 
-      <Input
-        label="Image URL"
-        placeholder="https://... (from Supabase storage)"
-        error={errors.image_url?.message}
-        {...register('image_url')}
+      {/* Image Upload */}
+      <ImageUpload
+        label="Project Image"
+        value={imageUrl}
+        onChange={(url) => setValue('image_url', url ?? '')}
+        folder="projects"
       />
 
       <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          id="is_featured"
+        <input type="checkbox" id="is_featured"
           className="w-4 h-4 rounded border-dark-600 bg-dark-800 text-brand-600 focus:ring-brand-500/50 cursor-pointer"
-          {...register('is_featured')}
-        />
+          {...register('is_featured')} />
         <label htmlFor="is_featured" className="text-sm text-dark-300 cursor-pointer">
           Feature this project (shown prominently)
         </label>
