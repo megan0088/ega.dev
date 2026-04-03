@@ -3,6 +3,29 @@
 -- Run this in: Supabase Dashboard → SQL Editor
 -- ============================================================
 
+-- ============================================================
+-- Storage bucket for image uploads
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('portfolio', 'portfolio', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage policies
+DROP POLICY IF EXISTS "Public can view portfolio files" ON storage.objects;
+CREATE POLICY "Public can view portfolio files"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'portfolio');
+
+DROP POLICY IF EXISTS "Authenticated users can upload portfolio files" ON storage.objects;
+CREATE POLICY "Authenticated users can upload portfolio files"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'portfolio' AND auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Authenticated users can delete portfolio files" ON storage.objects;
+CREATE POLICY "Authenticated users can delete portfolio files"
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'portfolio' AND auth.role() = 'authenticated');
+
 -- Experiences table
 CREATE TABLE IF NOT EXISTS experiences (
   id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
