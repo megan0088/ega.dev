@@ -73,11 +73,19 @@ export default function AboutSection() {
               I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise
               SAP B1 integrations.
             </p>
-            <p className="text-dark-400 text-lg leading-relaxed">
-              Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing
-              custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.
-              I thrive on bridging complex systems with elegant, user-friendly interfaces.
-            </p>
+            <div className="flex flex-col gap-3">
+              <p className="text-dark-400 text-lg leading-relaxed">
+                Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing
+                custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-sm font-medium w-fit">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
+                </span>
+                Currently Learning at Apple Developer Academy Binus — Cohort 9
+              </div>
+            </div>
           </div>
         </motion.div>
 
