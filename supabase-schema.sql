@@ -29,12 +29,55 @@ CREATE TABLE IF NOT EXISTS projects (
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Profile table (single row)
+CREATE TABLE IF NOT EXISTS profile (
+  id                  INTEGER PRIMARY KEY DEFAULT 1,
+  name                TEXT NOT NULL DEFAULT 'Muhamad Ega Nugraha',
+  title               TEXT NOT NULL DEFAULT 'Software Engineer & SAP B1 Technical Consultant',
+  subtitle            TEXT NOT NULL DEFAULT 'Building innovative digital solutions.',
+  bio                 TEXT NOT NULL DEFAULT '',
+  bio2                TEXT NOT NULL DEFAULT '',
+  avatar_url          TEXT,
+  status_text         TEXT NOT NULL DEFAULT 'Available for opportunities',
+  currently_learning  TEXT,
+  tech_badges         TEXT[] DEFAULT '{}',
+  github_url          TEXT,
+  linkedin_url        TEXT,
+  email               TEXT,
+  phone               TEXT,
+  instagram_url       TEXT,
+  updated_at          TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT profile_single_row CHECK (id = 1)
+);
+
+-- Skill categories table
+CREATE TABLE IF NOT EXISTS skill_categories (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name        TEXT NOT NULL,
+  color       TEXT NOT NULL DEFAULT 'from-brand-500 to-brand-400',
+  sort_order  INTEGER NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Skills table
+CREATE TABLE IF NOT EXISTS skills (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  category_id UUID NOT NULL REFERENCES skill_categories(id) ON DELETE CASCADE,
+  name        TEXT NOT NULL,
+  level       INTEGER NOT NULL DEFAULT 80 CHECK (level >= 0 AND level <= 100),
+  sort_order  INTEGER NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- Row Level Security (RLS)
 -- ============================================================
 
 ALTER TABLE experiences ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
+ALTER TABLE skill_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 
 -- Public read access (portfolio page)
 CREATE POLICY "Public can read experiences"
@@ -42,6 +85,28 @@ CREATE POLICY "Public can read experiences"
 
 CREATE POLICY "Public can read projects"
   ON projects FOR SELECT USING (true);
+
+-- Public read: profile, skill_categories, skills
+CREATE POLICY "Public can read profile"
+  ON profile FOR SELECT USING (true);
+
+CREATE POLICY "Public can read skill_categories"
+  ON skill_categories FOR SELECT USING (true);
+
+CREATE POLICY "Public can read skills"
+  ON skills FOR SELECT USING (true);
+
+-- Authenticated write: profile
+CREATE POLICY "Authenticated users can upsert profile"
+  ON profile FOR ALL USING (auth.role() = 'authenticated');
+
+-- Authenticated write: skill_categories
+CREATE POLICY "Authenticated users can manage skill_categories"
+  ON skill_categories FOR ALL USING (auth.role() = 'authenticated');
+
+-- Authenticated write: skills
+CREATE POLICY "Authenticated users can manage skills"
+  ON skills FOR ALL USING (auth.role() = 'authenticated');
 
 -- Authenticated write access (admin dashboard)
 CREATE POLICY "Authenticated users can insert experiences"
@@ -169,3 +234,61 @@ INSERT INTO experiences (title, company, start_date, end_date, is_current, descr
   ],
   'competition'
 );
+
+-- ============================================================
+-- Seed: Profile
+-- ============================================================
+INSERT INTO profile (id, name, title, subtitle, bio, bio2, status_text, currently_learning, tech_badges, github_url, linkedin_url, email, phone, instagram_url)
+VALUES (
+  1,
+  'Muhamad Ega Nugraha',
+  'Software Engineer & SAP B1 Technical Consultant',
+  'Building innovative digital solutions — from full-stack web apps and Flutter mobile apps to IoT systems and enterprise SAP integrations.',
+  'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.',
+  'Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.',
+  'Available for opportunities',
+  'Apple Developer Academy Binus — Cohort 9',
+  ARRAY['Next.js', 'Flutter', 'TypeScript', 'Supabase', 'SAP B1', 'Swift'],
+  'https://github.com/megan0088',
+  'https://linkedin.com/in/ega-nugraha',
+  'eganeue@gmail.com',
+  '+62 812-9314-8932',
+  'https://instagram.com/eganugraha08'
+) ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================
+-- Seed: Skill Categories & Skills
+-- ============================================================
+WITH cat1 AS (
+  INSERT INTO skill_categories (name, color, sort_order) VALUES ('Languages', 'from-brand-500 to-brand-400', 0) RETURNING id
+),
+cat2 AS (
+  INSERT INTO skill_categories (name, color, sort_order) VALUES ('Frontend & Mobile', 'from-accent-purple to-purple-400', 1) RETURNING id
+),
+cat3 AS (
+  INSERT INTO skill_categories (name, color, sort_order) VALUES ('Backend & Database', 'from-accent-emerald to-emerald-400', 2) RETURNING id
+),
+cat4 AS (
+  INSERT INTO skill_categories (name, color, sort_order) VALUES ('Tools & Others', 'from-accent-cyan to-cyan-400', 3) RETURNING id
+)
+INSERT INTO skills (category_id, name, level, sort_order) VALUES
+  ((SELECT id FROM cat1), 'TypeScript / JavaScript', 85, 0),
+  ((SELECT id FROM cat1), 'Dart (Flutter)', 85, 1),
+  ((SELECT id FROM cat1), 'C# (.NET / SAP SDK)', 70, 2),
+  ((SELECT id FROM cat1), 'C / C++', 60, 3),
+  ((SELECT id FROM cat1), 'Swift (iOS)', 40, 4),
+  ((SELECT id FROM cat2), 'Next.js / React', 85, 0),
+  ((SELECT id FROM cat2), 'Flutter', 85, 1),
+  ((SELECT id FROM cat2), 'Tailwind CSS', 90, 2),
+  ((SELECT id FROM cat2), 'Framer Motion', 75, 3),
+  ((SELECT id FROM cat2), 'React Native', 55, 4),
+  ((SELECT id FROM cat3), 'Supabase / PostgreSQL', 80, 0),
+  ((SELECT id FROM cat3), 'Firebase', 75, 1),
+  ((SELECT id FROM cat3), 'MySQL', 75, 2),
+  ((SELECT id FROM cat3), 'SAP HANA', 65, 3),
+  ((SELECT id FROM cat3), 'REST APIs', 85, 4),
+  ((SELECT id FROM cat4), 'Git & GitHub', 85, 0),
+  ((SELECT id FROM cat4), 'Figma', 70, 1),
+  ((SELECT id FROM cat4), 'Postman', 80, 2),
+  ((SELECT id FROM cat4), 'IoT (MQTT / ESP8266)', 70, 3),
+  ((SELECT id FROM cat4), 'SAP Business One', 75, 4);

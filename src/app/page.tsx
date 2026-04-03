@@ -4,37 +4,52 @@ import { createClient } from '@/lib/supabase/server';
 import Navbar from '@/components/sections/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
+import SkillsSection from '@/components/sections/SkillsSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
-import SkillsSection from '@/components/sections/SkillsSection';
 import ContactSection from '@/components/sections/ContactSection';
-import type { Experience, Project } from '@/types';
+import type { Experience, Project, Profile, SkillCategory, Skill } from '@/types';
 
 async function getData() {
   try {
     const supabase = await createClient();
-    const [{ data: experiences }, { data: projects }] = await Promise.all([
+    const [
+      { data: profile },
+      { data: experiences },
+      { data: projects },
+      { data: skillCategories },
+      { data: skills },
+    ] = await Promise.all([
+      supabase.from('profile').select('*').single(),
       supabase.from('experiences').select('*').order('start_date', { ascending: false }),
       supabase.from('projects').select('*').order('created_at', { ascending: false }),
+      supabase.from('skill_categories').select('*').order('sort_order', { ascending: true }),
+      supabase.from('skills').select('*').order('sort_order', { ascending: true }),
     ]);
-    return { experiences: (experiences ?? []) as Experience[], projects: (projects ?? []) as Project[] };
+    return {
+      profile: profile as Profile | null,
+      experiences: (experiences ?? []) as Experience[],
+      projects: (projects ?? []) as Project[],
+      skillCategories: (skillCategories ?? []) as SkillCategory[],
+      skills: (skills ?? []) as Skill[],
+    };
   } catch {
-    return { experiences: [], projects: [] };
+    return { profile: null, experiences: [], projects: [], skillCategories: [], skills: [] };
   }
 }
 
 export default async function HomePage() {
-  const { experiences, projects } = await getData();
+  const { profile, experiences, projects, skillCategories, skills } = await getData();
 
   return (
     <main>
       <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
+      <HeroSection profile={profile} />
+      <AboutSection profile={profile} />
+      <SkillsSection categories={skillCategories} skills={skills} />
       <ExperienceSection experiences={experiences} />
       <ProjectsSection projects={projects} />
-      <ContactSection />
+      <ContactSection profile={profile} />
     </main>
   );
 }
