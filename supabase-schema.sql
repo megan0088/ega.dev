@@ -79,6 +79,22 @@ ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skill_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies first (safe to re-run)
+DROP POLICY IF EXISTS "Public can read experiences" ON experiences;
+DROP POLICY IF EXISTS "Public can read projects" ON projects;
+DROP POLICY IF EXISTS "Public can read profile" ON profile;
+DROP POLICY IF EXISTS "Public can read skill_categories" ON skill_categories;
+DROP POLICY IF EXISTS "Public can read skills" ON skills;
+DROP POLICY IF EXISTS "Authenticated users can upsert profile" ON profile;
+DROP POLICY IF EXISTS "Authenticated users can manage skill_categories" ON skill_categories;
+DROP POLICY IF EXISTS "Authenticated users can manage skills" ON skills;
+DROP POLICY IF EXISTS "Authenticated users can insert experiences" ON experiences;
+DROP POLICY IF EXISTS "Authenticated users can update experiences" ON experiences;
+DROP POLICY IF EXISTS "Authenticated users can delete experiences" ON experiences;
+DROP POLICY IF EXISTS "Authenticated users can insert projects" ON projects;
+DROP POLICY IF EXISTS "Authenticated users can update projects" ON projects;
+DROP POLICY IF EXISTS "Authenticated users can delete projects" ON projects;
+
 -- Public read access (portfolio page)
 CREATE POLICY "Public can read experiences"
   ON experiences FOR SELECT USING (true);
