@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import { createClient } from '@/lib/supabase/server';
 import Navbar from '@/components/sections/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
