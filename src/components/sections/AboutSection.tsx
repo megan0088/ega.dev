@@ -1,68 +1,190 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Code2, Cpu, Database, Smartphone } from 'lucide-react';
-import type { Profile } from '@/types';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Code2, Cpu, Database, Smartphone, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import type { Profile, Project } from '@/types';
 
 interface AboutSectionProps {
   profile: Profile | null;
+  projects: Project[];
 }
 
-const defaultSkillCards = [
+const stacks = [
   {
+    id: 'web',
     icon: Code2,
     title: 'Web Development',
-    color: 'text-brand-400',
-    bg: 'bg-brand-500/10',
-    border: 'border-brand-500/20',
+    subtitle: 'Full-stack modern web apps',
+    keywords: ['next', 'react', 'typescript', 'javascript', 'tailwind', 'html', 'css', 'vue', 'nuxt', 'gatsby', 'web'],
     items: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'HTML/CSS'],
+    // Blue — brand
+    glowColor: 'bg-brand-600/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-brand-500/50 hover:bg-brand-500/5 hover:text-brand-300',
+    tabActive: 'border-brand-500 bg-brand-500/15 text-brand-300 shadow-[0_0_20px_rgba(99,102,241,0.15)]',
+    iconBg: 'bg-brand-500/15',
+    iconColor: 'text-brand-400',
+    accent: 'text-brand-300',
+    dot: 'bg-brand-500',
+    bar: 'from-brand-500 to-brand-400',
+    pillBg: 'bg-brand-500/10 border-brand-500/30 text-brand-300',
+    itemColor: 'text-brand-400',
+    cardBorder: 'border-brand-500/20',
+    cardBg: 'bg-brand-500/5',
+    projectBadge: 'bg-brand-500/10 border-brand-500/20 text-brand-300',
   },
   {
+    id: 'mobile',
     icon: Smartphone,
-    title: 'Mobile Development',
-    color: 'text-accent-purple',
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/20',
-    items: ['Flutter', 'Dart', 'Provider', 'GetX', 'React Native'],
+    title: 'Mobile — Flutter',
+    subtitle: 'Cross-platform mobile apps',
+    keywords: ['flutter', 'dart', 'react native', 'swift', 'kotlin', 'ios', 'android', 'mobile', 'swiftui'],
+    items: ['Flutter / Dart', 'Provider / GetX', 'React Native', 'Swift (iOS)', 'Firebase SDK'],
+    // Flutter Pro — sky blue → blue
+    glowColor: 'bg-sky-500/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-sky-400/50 hover:bg-sky-500/5 hover:text-sky-300',
+    tabActive: 'border-sky-400 bg-sky-500/15 text-sky-300 shadow-[0_0_20px_rgba(56,189,248,0.15)]',
+    iconBg: 'bg-sky-500/15',
+    iconColor: 'text-sky-400',
+    accent: 'text-sky-300',
+    dot: 'bg-sky-400',
+    bar: 'from-sky-400 to-blue-500',
+    pillBg: 'bg-sky-500/10 border-sky-500/30 text-sky-300',
+    itemColor: 'text-sky-400',
+    cardBorder: 'border-sky-500/20',
+    cardBg: 'bg-sky-500/5',
+    projectBadge: 'bg-sky-500/10 border-sky-500/20 text-sky-300',
   },
   {
+    id: 'backend',
     icon: Database,
     title: 'Backend & Database',
-    color: 'text-accent-emerald',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-500/20',
-    items: ['Supabase', 'Firebase', 'MySQL', 'SAP HANA', 'REST APIs'],
+    subtitle: 'APIs, databases & enterprise systems',
+    keywords: ['supabase', 'firebase', 'mysql', 'postgresql', 'mongodb', 'node', 'express', 'rest', 'api', 'hana', 'sap', 'python', 'laravel', 'backend', 'database', 'server'],
+    items: ['Supabase / PostgreSQL', 'Firebase', 'MySQL / SAP HANA', 'REST APIs', 'SAP B1 SDK'],
+    // Emerald green
+    glowColor: 'bg-emerald-600/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-emerald-500/50 hover:bg-emerald-500/5 hover:text-emerald-300',
+    tabActive: 'border-emerald-500 bg-emerald-500/15 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.15)]',
+    iconBg: 'bg-emerald-500/15',
+    iconColor: 'text-emerald-400',
+    accent: 'text-emerald-300',
+    dot: 'bg-emerald-500',
+    bar: 'from-emerald-500 to-green-400',
+    pillBg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
+    itemColor: 'text-emerald-400',
+    cardBorder: 'border-emerald-500/20',
+    cardBg: 'bg-emerald-500/5',
+    projectBadge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
   },
   {
+    id: 'iot',
     icon: Cpu,
     title: 'Cloud & IoT',
-    color: 'text-accent-cyan',
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-500/20',
-    items: ['MQTT', 'Blynk', 'ESP8266', 'Raspberry Pi', 'SAP B1 SDK'],
+    subtitle: 'Embedded systems & cloud infrastructure',
+    keywords: ['mqtt', 'blynk', 'esp8266', 'esp32', 'raspberry', 'iot', 'aws', 'gcp', 'azure', 'docker', 'c#', '.net', 'embedded', 'hardware', 'arduino'],
+    items: ['MQTT / Blynk', 'ESP8266 / ESP32', 'Raspberry Pi', 'C# / .NET', 'SAP B1 Integration'],
+    // Cyan — cloud/IoT
+    glowColor: 'bg-cyan-600/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:text-cyan-300',
+    tabActive: 'border-cyan-400 bg-cyan-500/15 text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)]',
+    iconBg: 'bg-cyan-500/15',
+    iconColor: 'text-cyan-400',
+    accent: 'text-cyan-300',
+    dot: 'bg-cyan-400',
+    bar: 'from-cyan-400 to-teal-500',
+    pillBg: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300',
+    itemColor: 'text-cyan-400',
+    cardBorder: 'border-cyan-500/20',
+    cardBg: 'bg-cyan-500/5',
+    projectBadge: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
   },
-];
+] as const;
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+type StackId = typeof stacks[number]['id'];
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+function getRelatedProjects(projects: Project[], keywords: readonly string[]): Project[] {
+  return projects.filter(p =>
+    p.tech_stack.some(tech =>
+      keywords.some(kw => tech.toLowerCase().includes(kw.toLowerCase()))
+    )
+  );
+}
 
-export default function AboutSection({ profile }: AboutSectionProps) {
+function MiniProjectCard({ project, stack, index }: { project: Project; stack: typeof stacks[number]; index: number }) {
+  return (
+    <motion.div
+      key={project.id}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ delay: index * 0.07, duration: 0.3 }}
+      className={`flex gap-4 p-4 rounded-xl border ${stack.cardBorder} ${stack.cardBg} group hover:border-opacity-50 transition-all`}
+    >
+      {project.image_url && (
+        <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-dark-800">
+          <Image src={project.image_url} alt={project.title} fill className="object-cover" />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h4 className="text-sm font-semibold text-white truncate">{project.title}</h4>
+          <div className="flex items-center gap-2 shrink-0">
+            {project.github_url && (
+              <a href={project.github_url} target="_blank" rel="noopener noreferrer"
+                className="text-dark-500 hover:text-white transition-colors">
+                <GitBranch size={13} />
+              </a>
+            )}
+            {project.live_url && (
+              <a href={project.live_url} target="_blank" rel="noopener noreferrer"
+                className={`transition-colors hover:opacity-80 ${stack.itemColor}`}>
+                <ExternalLink size={13} />
+              </a>
+            )}
+          </div>
+        </div>
+        <p className="text-dark-500 text-xs leading-relaxed line-clamp-2 mb-2">{project.description}</p>
+        <div className="flex flex-wrap gap-1">
+          {project.tech_stack.slice(0, 4).map(tech => (
+            <span key={tech} className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${stack.projectBadge}`}>
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function AboutSection({ profile, projects }: AboutSectionProps) {
+  const [activeId, setActiveId] = useState<StackId>('web');
+
   const bio = profile?.bio ?? 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';
   const bio2 = profile?.bio2 ?? 'Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.';
   const currentlyLearning = profile?.currently_learning ?? null;
 
+  const activeStack = stacks.find(s => s.id === activeId)!;
+  const relatedProjects = getRelatedProjects(projects, activeStack.keywords);
+
   return (
     <section id="about" className="relative py-32 px-6 overflow-hidden">
-      <div className="glow-orb w-[500px] h-[500px] bg-accent-purple/10 top-0 right-0" />
+      {/* Dynamic glow orb per active tab */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeId}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className={`glow-orb w-[600px] h-[600px] ${activeStack.glowColor} top-0 right-0`}
+        />
+      </AnimatePresence>
 
       <div className="max-w-6xl mx-auto relative z-10">
+
+        {/* Bio */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -91,28 +213,109 @@ export default function AboutSection({ profile }: AboutSectionProps) {
           </div>
         </motion.div>
 
+        {/* Stack Tabs */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="mb-4"
         >
-          {defaultSkillCards.map((skill) => (
-            <motion.div key={skill.title} variants={itemVariants}
-              className={`p-6 rounded-2xl bg-white/5 border ${skill.border} hover:bg-white/8 transition-all duration-300 group`}>
-              <div className={`w-10 h-10 rounded-xl ${skill.bg} flex items-center justify-center mb-4`}>
-                <skill.icon size={20} className={skill.color} />
-              </div>
-              <h3 className="font-semibold text-white mb-3 text-sm">{skill.title}</h3>
-              <ul className="space-y-1">
-                {skill.items.map((item) => (
-                  <li key={item} className="text-dark-400 text-xs font-mono">{item}</li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
+          <p className="text-dark-500 text-xs font-mono mb-4 uppercase tracking-widest">// select a stack</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {stacks.map((stack) => {
+              const isActive = activeId === stack.id;
+              const related = getRelatedProjects(projects, stack.keywords);
+              return (
+                <button
+                  key={stack.id}
+                  onClick={() => setActiveId(stack.id)}
+                  className={`relative text-left p-5 rounded-2xl border transition-all duration-300 group ${isActive ? stack.tabActive : stack.tabInactive}`}
+                >
+                  {/* Active indicator */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-tab-indicator"
+                      className={`absolute top-3 right-3 w-2 h-2 rounded-full ${stack.dot}`}
+                    />
+                  )}
+
+                  <div className={`w-10 h-10 rounded-xl ${stack.iconBg} flex items-center justify-center mb-3`}>
+                    <stack.icon size={18} className={stack.iconColor} />
+                  </div>
+                  <h3 className="font-semibold text-white text-sm mb-1 leading-tight">{stack.title}</h3>
+                  <p className="text-dark-600 text-xs mb-3 leading-relaxed">{stack.subtitle}</p>
+
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-mono ${isActive ? stack.accent : 'text-dark-600'} transition-colors`}>
+                      {related.length} project{related.length !== 1 ? 's' : ''}
+                    </span>
+                    <ChevronRight size={13} className={`transition-all duration-300 ${isActive ? `${stack.accent} translate-x-0.5` : 'text-dark-700'}`} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </motion.div>
+
+        {/* Active stack detail + related projects */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeId}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            className={`rounded-2xl border ${activeStack.cardBorder} overflow-hidden`}
+          >
+            <div className={`grid md:grid-cols-[280px_1fr] divide-y md:divide-y-0 md:divide-x divide-white/5`}>
+
+              {/* Stack items */}
+              <div className={`p-6 ${activeStack.cardBg}`}>
+                <div className="flex items-center gap-2 mb-5">
+                  <div className={`w-8 h-8 rounded-lg ${activeStack.iconBg} flex items-center justify-center`}>
+                    <activeStack.icon size={15} className={activeStack.iconColor} />
+                  </div>
+                  <h3 className={`text-sm font-semibold ${activeStack.accent}`}>{activeStack.title}</h3>
+                </div>
+                <ul className="space-y-3">
+                  {activeStack.items.map((item, i) => (
+                    <motion.li
+                      key={item}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.06 }}
+                      className="flex items-center gap-2.5"
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${activeStack.dot}`} />
+                      <span className="text-sm text-dark-300 font-mono">{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Related Projects */}
+              <div className="p-6">
+                <p className="text-xs font-mono text-dark-600 uppercase tracking-widest mb-4">
+                  Related Projects
+                </p>
+                {relatedProjects.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-10 text-dark-600 text-sm">
+                    <span className="text-2xl mb-2">🔨</span>
+                    Building something here...
+                  </div>
+                ) : (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <AnimatePresence>
+                      {relatedProjects.map((project, i) => (
+                        <MiniProjectCard key={project.id} project={project} stack={activeStack} index={i} />
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );

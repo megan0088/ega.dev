@@ -61,7 +61,7 @@ export default async function HomePage() {
     <main>
       <Navbar />
       <HeroSection profile={profile} />
-      <AboutSection profile={profile} />
+      <AboutSection profile={profile} projects={projects} />
       <SkillsSection categories={skillCategories} skills={skills} />
       <ExperienceSection experiences={experiences} />
       <ProjectsSection projects={projects} />
