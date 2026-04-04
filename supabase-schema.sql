@@ -315,6 +315,9 @@ cat3 AS (
 ),
 cat4 AS (
   INSERT INTO skill_categories (name, color, sort_order) VALUES ('Tools & Others', 'from-accent-cyan to-cyan-400', 3) RETURNING id
+),
+cat5 AS (
+  INSERT INTO skill_categories (name, color, sort_order) VALUES ('3D Design & Animation', 'from-orange-400 to-amber-400', 4) RETURNING id
 )
 INSERT INTO skills (category_id, name, level, sort_order) VALUES
   ((SELECT id FROM cat1), 'TypeScript / JavaScript', 85, 0),
@@ -336,4 +339,9 @@ INSERT INTO skills (category_id, name, level, sort_order) VALUES
   ((SELECT id FROM cat4), 'Figma', 70, 1),
   ((SELECT id FROM cat4), 'Postman', 80, 2),
   ((SELECT id FROM cat4), 'IoT (MQTT / ESP8266)', 70, 3),
-  ((SELECT id FROM cat4), 'SAP Business One', 75, 4);
+  ((SELECT id FROM cat4), 'SAP Business One', 75, 4),
+  ((SELECT id FROM cat5), '3D Sculpting', 100, 0),
+  ((SELECT id FROM cat5), 'Character Rigging', 100, 1),
+  ((SELECT id FROM cat5), 'Keyframe Animation', 100, 2),
+  ((SELECT id FROM cat5), 'UV Mapping & Texturing', 100, 3),
+  ((SELECT id FROM cat5), 'Rendering & Lighting', 100, 4);
