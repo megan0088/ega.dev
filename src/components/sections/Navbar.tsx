@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Code2 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -81,14 +82,17 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Mobile menu toggle */}
-          <button
-            className="md:hidden p-2 rounded-lg text-dark-400 hover:text-white hover:bg-white/5 transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Right side: theme toggle + mobile hamburger */}
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <button
+              className="md:hidden p-2 rounded-lg text-dark-400 hover:text-white hover:bg-white/5 transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </motion.header>
 

@@ -4,12 +4,49 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 9 11 22;
-    --foreground: 248 250 252;
-  }
+/* ============================================================
+   CSS Custom Properties — Theme Tokens
+   ============================================================ */
+:root {
+  --theme-bg:           #090b16;
+  --theme-bg-alt:       #0f172a;
+  --theme-surface:      rgba(255,255,255,0.05);
+  --theme-surface-hover:rgba(255,255,255,0.08);
+  --theme-elevated:     #1e293b;
+  --theme-text:         #f8fafc;
+  --theme-text-muted:   #94a3b8;
+  --theme-text-faint:   #64748b;
+  --theme-border:       rgba(255,255,255,0.10);
+  --theme-border-faint: rgba(255,255,255,0.05);
+  --theme-scrollbar:    #334155;
+  --theme-scrollbar-bg: #0f172a;
+  --theme-scrollbar-hover: #475569;
+  --noise-opacity:      0.035;
+  --glow-scale:         1;
+}
 
+html.light {
+  --theme-bg:           #FAF7F0;
+  --theme-bg-alt:       #EDE7DB;
+  --theme-surface:      rgba(255,255,255,0.88);
+  --theme-surface-hover:rgba(255,255,255,0.95);
+  --theme-elevated:     #FFFFFF;
+  --theme-text:         #0F172A;
+  --theme-text-muted:   #475569;
+  --theme-text-faint:   #94a3b8;
+  --theme-border:       rgba(0,0,0,0.09);
+  --theme-border-faint: rgba(0,0,0,0.05);
+  --theme-scrollbar:    #cbd5e1;
+  --theme-scrollbar-bg: #e2d9cc;
+  --theme-scrollbar-hover: #94a3b8;
+  --noise-opacity:      0.022;
+  --glow-scale:         0.7;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
   * {
     box-sizing: border-box;
     padding: 0;
@@ -23,35 +60,169 @@
   }
 
   body {
-    background-color: #090b16;
-    color: #f8fafc;
+    background-color: var(--theme-bg);
+    color: var(--theme-text);
     font-family: 'Inter', system-ui, sans-serif;
     overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
   ::selection {
-    background-color: rgba(59, 130, 246, 0.3);
+    background-color: rgba(59, 130, 246, 0.25);
     color: #f8fafc;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
+  html.light ::selection {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #0f172a;
   }
 
-  ::-webkit-scrollbar-track {
-    background: #0f172a;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--theme-scrollbar-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--theme-scrollbar); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--theme-scrollbar-hover); }
 }
 
+/* ============================================================
+   Film grain noise texture overlay (both modes, different intensity)
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: var(--noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  transition: opacity 0.4s;
+}
+
+/* ============================================================
+   Animated background grid
+   ============================================================ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+html.light .bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ============================================================
+   Glow orb — aurora animated
+   ============================================================ */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  animation: aurora 10s ease-in-out infinite alternate;
+}
+
+html.light .glow-orb {
+  filter: blur(110px);
+  opacity: 0.45;
+}
+
+@keyframes aurora {
+  0%   { transform: scale(1) translate(0%, 0%); opacity: 0.7; }
+  33%  { transform: scale(1.08) translate(-3%, 4%);  opacity: 0.9; }
+  66%  { transform: scale(0.94) translate(4%, -3%);  opacity: 0.75; }
+  100% { transform: scale(1.04) translate(-2%, -2%); opacity: 0.85; }
+}
+
+/* ============================================================
+   LIGHT MODE — Color overrides
+   All Tailwind classes remapped for warm cream theme
+   ============================================================ */
+
+/* --- Body / page background --- */
+html.light body { background-color: #FAF7F0; color: #0F172A; }
+
+/* --- Dark palette → cream palette --- */
+html.light .bg-dark-950  { background-color: #FAF7F0 !important; }
+html.light .bg-dark-900  { background-color: #EDE7DB !important; }
+html.light .bg-dark-800  { background-color: #FFFFFF !important; }
+html.light .bg-dark-700  { background-color: #F5F0E8 !important; }
+
+/* Opacity variants */
+html.light .bg-dark-950\/80  { background-color: rgba(250,247,240,0.88) !important; }
+html.light .bg-dark-950\/95  { background-color: rgba(250,247,240,0.97) !important; }
+html.light .bg-dark-900\/50  { background-color: rgba(237,231,219,0.6) !important; }
+html.light .bg-dark-800\/80  { background-color: rgba(255,255,255,0.88) !important; }
+
+/* --- Semi-transparent white surfaces → white cards --- */
+html.light .bg-white\/5   { background-color: rgba(255,255,255,0.85) !important; }
+html.light .bg-white\/8   { background-color: rgba(255,255,255,0.88) !important; }
+html.light .bg-white\/10  { background-color: rgba(255,255,255,0.92) !important; }
+html.light .bg-white\/15  { background-color: rgba(255,255,255,0.95) !important; }
+html.light .bg-white\/20  { background-color: rgba(255,255,255,0.97) !important; }
+
+/* Hover states */
+html.light .hover\:bg-white\/5:hover   { background-color: rgba(255,255,255,0.92) !important; }
+html.light .hover\:bg-white\/8:hover   { background-color: rgba(255,255,255,0.95) !important; }
+html.light .hover\:bg-white\/10:hover  { background-color: rgba(255,255,255,0.97) !important; }
+html.light .hover\:bg-white\/15:hover  { background-color: rgba(255,255,255,1.00) !important; }
+
+/* --- Text colors → inverted for light bg --- */
+html.light .text-white    { color: #0F172A !important; }
+html.light .text-dark-100 { color: #0F172A !important; }
+html.light .text-dark-200 { color: #1E293B !important; }
+html.light .text-dark-300 { color: #334155 !important; }
+html.light .text-dark-400 { color: #475569 !important; }
+html.light .text-dark-500 { color: #64748B !important; }
+html.light .text-dark-600 { color: #94A3B8 !important; }
+html.light .text-dark-700 { color: #B0BEC5 !important; }
+
+/* Hover text */
+html.light .hover\:text-white:hover { color: #0F172A !important; }
+
+/* --- Borders → subtle dark lines --- */
+html.light .border-white\/5   { border-color: rgba(0,0,0,0.06) !important; }
+html.light .border-white\/10  { border-color: rgba(0,0,0,0.09) !important; }
+html.light .border-white\/15  { border-color: rgba(0,0,0,0.11) !important; }
+html.light .border-white\/20  { border-color: rgba(0,0,0,0.14) !important; }
+html.light .border-dark-600   { border-color: rgba(0,0,0,0.14) !important; }
+
+/* Hover borders */
+html.light .hover\:border-white\/20:hover { border-color: rgba(0,0,0,0.18) !important; }
+
+/* --- Card depth: box shadow in light mode --- */
+html.light .rounded-2xl.border,
+html.light .rounded-xl.border {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+}
+html.light .rounded-2xl.border:hover,
+html.light .rounded-xl.border:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.09);
+}
+
+/* --- Form inputs in light mode --- */
+html.light .bg-dark-800\/80,
+html.light input.bg-dark-800\/80 { background-color: rgba(255,255,255,0.9) !important; }
+
+html.light .placeholder-dark-500::placeholder { color: #94a3b8 !important; }
+
+/* --- Mobile menu overlay --- */
+html.light .bg-dark-950\/95 { background-color: rgba(250,247,240,0.97) !important; }
+
+/* ============================================================
+   DARK MODE — Artistic enhancements
+   ============================================================ */
+html.dark .glow-orb {
+  filter: blur(90px) saturate(1.3);
+}
+
+/* ============================================================
+   Component utilities
+   ============================================================ */
 @layer components {
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
@@ -107,28 +278,22 @@
     text-wrap: balance;
   }
 
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
-/* Animated background grid */
-.bg-grid {
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
+/* ============================================================
+   Theme-aware transition on all elements
+   ============================================================ */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
 }
 
-/* Glow orb */
-.glow-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
+/* Exclude transitions from transform/opacity to keep animations snappy */
+.glow-orb,
+[class*="animate-"],
+[class*="motion-"] {
+  transition-property: none !important;
 }
