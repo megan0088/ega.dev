@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Cpu, Database, Smartphone, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
+import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import type { Profile, Project } from '@/types';
 
@@ -99,6 +99,28 @@ const stacks = [
     cardBorder: 'border-cyan-500/20',
     cardBg: 'bg-cyan-500/5',
     projectBadge: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
+  },
+  {
+    id: '3d',
+    icon: Box,
+    title: '3D Design & Animation',
+    subtitle: 'Sculpting, rigging & motion design',
+    keywords: ['blender', '3d', 'rigging', 'sculpt', 'animation', 'modeling', 'render', 'vfx', 'motion'],
+    items: ['3D Sculpting', 'Character Rigging', 'Keyframe Animation', 'UV Mapping & Texturing', 'Rendering & Lighting'],
+    // Amber/orange — creative
+    glowColor: 'bg-orange-500/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-orange-400/50 hover:bg-orange-500/5 hover:text-orange-300',
+    tabActive: 'border-orange-400 bg-orange-500/15 text-orange-300 shadow-[0_0_20px_rgba(251,146,60,0.15)]',
+    iconBg: 'bg-orange-500/15',
+    iconColor: 'text-orange-400',
+    accent: 'text-orange-300',
+    dot: 'bg-orange-400',
+    bar: 'from-orange-400 to-amber-500',
+    pillBg: 'bg-orange-500/10 border-orange-500/30 text-orange-300',
+    itemColor: 'text-orange-400',
+    cardBorder: 'border-orange-500/20',
+    cardBg: 'bg-orange-500/5',
+    projectBadge: 'bg-orange-500/10 border-orange-500/20 text-orange-300',
   },
 ] as const;
 
@@ -221,7 +243,7 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           className="mb-4"
         >
           <p className="text-dark-500 text-xs font-mono mb-4 uppercase tracking-widest">// select a stack</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {stacks.map((stack) => {
               const isActive = activeId === stack.id;
               const related = getRelatedProjects(projects, stack.keywords);
