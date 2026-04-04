@@ -1,0 +1,149 @@
+export type Lang = 'en' | 'id';
+
+export const translations = {
+  en: {
+    nav: {
+      home: 'Home',
+      about: 'About',
+      skills: 'Skills',
+      experience: 'Experience',
+      projects: 'Projects',
+      contact: 'Contact',
+    },
+    hero: {
+      viewExperience: 'View Experience',
+      getInTouch: 'Get in Touch',
+      currentlyLearning: 'Currently Learning',
+    },
+    about: {
+      tag: 'about_me',
+      title: 'Who I Am',
+      selectStack: '// select a stack',
+      relatedProjects: 'Related Projects',
+      buildingHere: 'Building something here...',
+      projectCount: (n: number) => `${n} ${n === 1 ? 'project' : 'projects'}`,
+      stacks: {
+        web:     { title: 'Web Development',       subtitle: 'Full-stack modern web apps' },
+        mobile:  { title: 'Mobile — Flutter',      subtitle: 'Cross-platform mobile apps' },
+        backend: { title: 'Backend & Database',    subtitle: 'APIs, databases & enterprise' },
+        iot:     { title: 'Cloud & IoT',           subtitle: 'Embedded systems & cloud' },
+        '3d':    { title: '3D Design & Animation', subtitle: 'Sculpting, rigging & motion' },
+      },
+    },
+    skills: {
+      tag: 'skills',
+      title: 'What I Work With',
+      tiers: {
+        Beginner:     'Beginner',
+        Intermediate: 'Intermediate',
+        Mastery:      'Mastery',
+      },
+    },
+    experience: {
+      tag: 'experience',
+      title: 'My Journey',
+      groups: {
+        work:        'Work Experience',
+        education:   'Education',
+        competition: 'Competition',
+      },
+      current: 'Current',
+      empty: 'No experiences yet. Add some from the admin dashboard.',
+    },
+    projects: {
+      tag: 'projects',
+      title: "What I've Built",
+      source:   'Source',
+      liveDemo: 'Live Demo',
+      featured: 'Featured',
+      empty: 'No projects yet. Add some from the admin dashboard.',
+    },
+    contact: {
+      tag: 'get_in_touch',
+      title: "Let's Work Together",
+      desc: "I'm open to freelance projects, collaborations, and full-time opportunities. Don't hesitate to reach out!",
+      sendEmail: 'Send me an email',
+      location: 'Indonesia',
+      footer: 'Built with Next.js & Supabase.',
+    },
+    notFound: {
+      title: 'Page not found',
+      desc: "The page you're looking for doesn't exist or has been moved.",
+      back: 'Back to Portfolio',
+      goBack: 'Go Back',
+    },
+  },
+
+  id: {
+    nav: {
+      home: 'Beranda',
+      about: 'Tentang',
+      skills: 'Keahlian',
+      experience: 'Pengalaman',
+      projects: 'Proyek',
+      contact: 'Kontak',
+    },
+    hero: {
+      viewExperience: 'Lihat Pengalaman',
+      getInTouch: 'Hubungi Saya',
+      currentlyLearning: 'Sedang Belajar',
+    },
+    about: {
+      tag: 'tentang_saya',
+      title: 'Siapa Saya',
+      selectStack: '// pilih stack',
+      relatedProjects: 'Proyek Terkait',
+      buildingHere: 'Sedang membangun sesuatu...',
+      projectCount: (n: number) => `${n} proyek`,
+      stacks: {
+        web:     { title: 'Web Development',       subtitle: 'Aplikasi web modern full-stack' },
+        mobile:  { title: 'Mobile — Flutter',      subtitle: 'Aplikasi mobile lintas platform' },
+        backend: { title: 'Backend & Database',    subtitle: 'API, database & sistem enterprise' },
+        iot:     { title: 'Cloud & IoT',           subtitle: 'Sistem embedded & cloud' },
+        '3d':    { title: '3D Desain & Animasi',   subtitle: 'Sculpting, rigging & gerak' },
+      },
+    },
+    skills: {
+      tag: 'keahlian',
+      title: 'Yang Saya Kuasai',
+      tiers: {
+        Beginner:     'Pemula',
+        Intermediate: 'Menengah',
+        Mastery:      'Mahir',
+      },
+    },
+    experience: {
+      tag: 'pengalaman',
+      title: 'Perjalanan Saya',
+      groups: {
+        work:        'Pengalaman Kerja',
+        education:   'Pendidikan',
+        competition: 'Kompetisi',
+      },
+      current: 'Aktif',
+      empty: 'Belum ada pengalaman. Tambahkan dari dashboard admin.',
+    },
+    projects: {
+      tag: 'proyek',
+      title: 'Yang Telah Saya Buat',
+      source:   'Kode',
+      liveDemo: 'Demo Langsung',
+      featured: 'Unggulan',
+      empty: 'Belum ada proyek. Tambahkan dari dashboard admin.',
+    },
+    contact: {
+      tag: 'hubungi_saya',
+      title: 'Mari Bekerja Sama',
+      desc: 'Saya terbuka untuk proyek freelance, kolaborasi, dan peluang kerja. Jangan ragu untuk menghubungi!',
+      sendEmail: 'Kirim Email',
+      location: 'Indonesia',
+      footer: 'Dibuat dengan Next.js & Supabase.',
+    },
+    notFound: {
+      title: 'Halaman tidak ditemukan',
+      desc: 'Halaman yang kamu cari tidak ada atau sudah dipindahkan.',
+      back: 'Kembali ke Portfolio',
+      goBack: 'Kembali',
+    },
+  },
+} as const;

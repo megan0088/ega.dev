@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import type { Profile, Project } from '@/types';
+import { useLang } from '@/lib/lang-context';
 
 interface AboutSectionProps {
   profile: Profile | null;
@@ -13,114 +14,59 @@ interface AboutSectionProps {
 
 const stacks = [
   {
-    id: 'web',
+    id: 'web' as const,
     icon: Code2,
-    title: 'Web Development',
-    subtitle: 'Full-stack modern web apps',
     keywords: ['next', 'react', 'typescript', 'javascript', 'tailwind', 'html', 'css', 'vue', 'nuxt', 'gatsby', 'web'],
     items: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'HTML/CSS'],
-    // Blue — brand
     glowColor: 'bg-brand-600/20',
     tabInactive: 'border-white/10 text-dark-400 hover:border-brand-500/50 hover:bg-brand-500/5 hover:text-brand-300',
     tabActive: 'border-brand-500 bg-brand-500/15 text-brand-300 shadow-[0_0_20px_rgba(99,102,241,0.15)]',
-    iconBg: 'bg-brand-500/15',
-    iconColor: 'text-brand-400',
-    accent: 'text-brand-300',
-    dot: 'bg-brand-500',
-    bar: 'from-brand-500 to-brand-400',
-    pillBg: 'bg-brand-500/10 border-brand-500/30 text-brand-300',
-    itemColor: 'text-brand-400',
-    cardBorder: 'border-brand-500/20',
-    cardBg: 'bg-brand-500/5',
-    projectBadge: 'bg-brand-500/10 border-brand-500/20 text-brand-300',
+    iconBg: 'bg-brand-500/15', iconColor: 'text-brand-400', accent: 'text-brand-300', dot: 'bg-brand-500',
+    cardBorder: 'border-brand-500/20', cardBg: 'bg-brand-500/5', projectBadge: 'bg-brand-500/10 border-brand-500/20 text-brand-300', itemColor: 'text-brand-400',
   },
   {
-    id: 'mobile',
+    id: 'mobile' as const,
     icon: Smartphone,
-    title: 'Mobile — Flutter',
-    subtitle: 'Cross-platform mobile apps',
     keywords: ['flutter', 'dart', 'react native', 'swift', 'kotlin', 'ios', 'android', 'mobile', 'swiftui'],
     items: ['Flutter / Dart', 'Provider / GetX', 'React Native', 'Swift (iOS)', 'Firebase SDK'],
-    // Flutter Pro — sky blue → blue
     glowColor: 'bg-sky-500/20',
     tabInactive: 'border-white/10 text-dark-400 hover:border-sky-400/50 hover:bg-sky-500/5 hover:text-sky-300',
     tabActive: 'border-sky-400 bg-sky-500/15 text-sky-300 shadow-[0_0_20px_rgba(56,189,248,0.15)]',
-    iconBg: 'bg-sky-500/15',
-    iconColor: 'text-sky-400',
-    accent: 'text-sky-300',
-    dot: 'bg-sky-400',
-    bar: 'from-sky-400 to-blue-500',
-    pillBg: 'bg-sky-500/10 border-sky-500/30 text-sky-300',
-    itemColor: 'text-sky-400',
-    cardBorder: 'border-sky-500/20',
-    cardBg: 'bg-sky-500/5',
-    projectBadge: 'bg-sky-500/10 border-sky-500/20 text-sky-300',
+    iconBg: 'bg-sky-500/15', iconColor: 'text-sky-400', accent: 'text-sky-300', dot: 'bg-sky-400',
+    cardBorder: 'border-sky-500/20', cardBg: 'bg-sky-500/5', projectBadge: 'bg-sky-500/10 border-sky-500/20 text-sky-300', itemColor: 'text-sky-400',
   },
   {
-    id: 'backend',
+    id: 'backend' as const,
     icon: Database,
-    title: 'Backend & Database',
-    subtitle: 'APIs, databases & enterprise systems',
     keywords: ['supabase', 'firebase', 'mysql', 'postgresql', 'mongodb', 'node', 'express', 'rest', 'api', 'hana', 'sap', 'python', 'laravel', 'backend', 'database', 'server'],
     items: ['Supabase / PostgreSQL', 'Firebase', 'MySQL / SAP HANA', 'REST APIs', 'SAP B1 SDK'],
-    // Emerald green
     glowColor: 'bg-emerald-600/20',
     tabInactive: 'border-white/10 text-dark-400 hover:border-emerald-500/50 hover:bg-emerald-500/5 hover:text-emerald-300',
     tabActive: 'border-emerald-500 bg-emerald-500/15 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.15)]',
-    iconBg: 'bg-emerald-500/15',
-    iconColor: 'text-emerald-400',
-    accent: 'text-emerald-300',
-    dot: 'bg-emerald-500',
-    bar: 'from-emerald-500 to-green-400',
-    pillBg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300',
-    itemColor: 'text-emerald-400',
-    cardBorder: 'border-emerald-500/20',
-    cardBg: 'bg-emerald-500/5',
-    projectBadge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
+    iconBg: 'bg-emerald-500/15', iconColor: 'text-emerald-400', accent: 'text-emerald-300', dot: 'bg-emerald-500',
+    cardBorder: 'border-emerald-500/20', cardBg: 'bg-emerald-500/5', projectBadge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300', itemColor: 'text-emerald-400',
   },
   {
-    id: 'iot',
+    id: 'iot' as const,
     icon: Cpu,
-    title: 'Cloud & IoT',
-    subtitle: 'Embedded systems & cloud infrastructure',
     keywords: ['mqtt', 'blynk', 'esp8266', 'esp32', 'raspberry', 'iot', 'aws', 'gcp', 'azure', 'docker', 'c#', '.net', 'embedded', 'hardware', 'arduino'],
     items: ['MQTT / Blynk', 'ESP8266 / ESP32', 'Raspberry Pi', 'C# / .NET', 'SAP B1 Integration'],
-    // Cyan — cloud/IoT
     glowColor: 'bg-cyan-600/20',
     tabInactive: 'border-white/10 text-dark-400 hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:text-cyan-300',
     tabActive: 'border-cyan-400 bg-cyan-500/15 text-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-    iconBg: 'bg-cyan-500/15',
-    iconColor: 'text-cyan-400',
-    accent: 'text-cyan-300',
-    dot: 'bg-cyan-400',
-    bar: 'from-cyan-400 to-teal-500',
-    pillBg: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300',
-    itemColor: 'text-cyan-400',
-    cardBorder: 'border-cyan-500/20',
-    cardBg: 'bg-cyan-500/5',
-    projectBadge: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300',
+    iconBg: 'bg-cyan-500/15', iconColor: 'text-cyan-400', accent: 'text-cyan-300', dot: 'bg-cyan-400',
+    cardBorder: 'border-cyan-500/20', cardBg: 'bg-cyan-500/5', projectBadge: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300', itemColor: 'text-cyan-400',
   },
   {
-    id: '3d',
+    id: '3d' as const,
     icon: Box,
-    title: '3D Design & Animation',
-    subtitle: 'Sculpting, rigging & motion design',
     keywords: ['blender', '3d', 'rigging', 'sculpt', 'animation', 'modeling', 'render', 'vfx', 'motion'],
     items: ['3D Sculpting', 'Character Rigging', 'Keyframe Animation', 'UV Mapping & Texturing', 'Rendering & Lighting'],
-    // Amber/orange — creative
     glowColor: 'bg-orange-500/20',
     tabInactive: 'border-white/10 text-dark-400 hover:border-orange-400/50 hover:bg-orange-500/5 hover:text-orange-300',
     tabActive: 'border-orange-400 bg-orange-500/15 text-orange-300 shadow-[0_0_20px_rgba(251,146,60,0.15)]',
-    iconBg: 'bg-orange-500/15',
-    iconColor: 'text-orange-400',
-    accent: 'text-orange-300',
-    dot: 'bg-orange-400',
-    bar: 'from-orange-400 to-amber-500',
-    pillBg: 'bg-orange-500/10 border-orange-500/30 text-orange-300',
-    itemColor: 'text-orange-400',
-    cardBorder: 'border-orange-500/20',
-    cardBg: 'bg-orange-500/5',
-    projectBadge: 'bg-orange-500/10 border-orange-500/20 text-orange-300',
+    iconBg: 'bg-orange-500/15', iconColor: 'text-orange-400', accent: 'text-orange-300', dot: 'bg-orange-400',
+    cardBorder: 'border-orange-500/20', cardBg: 'bg-orange-500/5', projectBadge: 'bg-orange-500/10 border-orange-500/20 text-orange-300', itemColor: 'text-orange-400',
   },
 ] as const;
 
@@ -137,12 +83,11 @@ function getRelatedProjects(projects: Project[], keywords: readonly string[]): P
 function MiniProjectCard({ project, stack, index }: { project: Project; stack: typeof stacks[number]; index: number }) {
   return (
     <motion.div
-      key={project.id}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ delay: index * 0.07, duration: 0.3 }}
-      className={`flex gap-4 p-4 rounded-xl border ${stack.cardBorder} ${stack.cardBg} group hover:border-opacity-50 transition-all`}
+      className={`flex gap-4 p-4 rounded-xl border ${stack.cardBorder} ${stack.cardBg} transition-all`}
     >
       {project.image_url && (
         <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-dark-800">
@@ -155,24 +100,18 @@ function MiniProjectCard({ project, stack, index }: { project: Project; stack: t
           <div className="flex items-center gap-2 shrink-0">
             {project.github_url && (
               <a href={project.github_url} target="_blank" rel="noopener noreferrer"
-                className="text-dark-500 hover:text-white transition-colors">
-                <GitBranch size={13} />
-              </a>
+                className="text-dark-500 hover:text-white transition-colors"><GitBranch size={13} /></a>
             )}
             {project.live_url && (
               <a href={project.live_url} target="_blank" rel="noopener noreferrer"
-                className={`transition-colors hover:opacity-80 ${stack.itemColor}`}>
-                <ExternalLink size={13} />
-              </a>
+                className={`transition-colors hover:opacity-80 ${stack.itemColor}`}><ExternalLink size={13} /></a>
             )}
           </div>
         </div>
         <p className="text-dark-500 text-xs leading-relaxed line-clamp-2 mb-2">{project.description}</p>
         <div className="flex flex-wrap gap-1">
           {project.tech_stack.slice(0, 4).map(tech => (
-            <span key={tech} className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${stack.projectBadge}`}>
-              {tech}
-            </span>
+            <span key={tech} className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${stack.projectBadge}`}>{tech}</span>
           ))}
         </div>
       </div>
@@ -181,6 +120,7 @@ function MiniProjectCard({ project, stack, index }: { project: Project; stack: t
 }
 
 export default function AboutSection({ profile, projects }: AboutSectionProps) {
+  const { tr } = useLang();
   const [activeId, setActiveId] = useState<StackId>('web');
 
   const bio = profile?.bio ?? 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';
@@ -189,10 +129,11 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
 
   const activeStack = stacks.find(s => s.id === activeId)!;
   const relatedProjects = getRelatedProjects(projects, activeStack.keywords);
+  const stackLabel = tr.about.stacks[activeId];
 
   return (
     <section id="about" className="relative py-32 px-6 overflow-hidden">
-      {/* Dynamic glow orb per active tab */}
+      {/* Dynamic glow orb */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeId}
@@ -205,7 +146,6 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
       </AnimatePresence>
 
       <div className="max-w-6xl mx-auto relative z-10">
-
         {/* Bio */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -215,9 +155,9 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           className="mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>about_me
+            <span className="text-brand-400">// </span>{tr.about.tag}
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Who I Am</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{tr.about.title}</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <p className="text-dark-400 text-lg leading-relaxed">{bio}</p>
             <div className="flex flex-col gap-3">
@@ -228,7 +168,7 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
                   </span>
-                  Currently Learning — {currentlyLearning}
+                  {tr.hero.currentlyLearning} — {currentlyLearning}
                 </div>
               )}
             </div>
@@ -242,34 +182,30 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           viewport={{ once: true }}
           className="mb-4"
         >
-          <p className="text-dark-500 text-xs font-mono mb-4 uppercase tracking-widest">// select a stack</p>
+          <p className="text-dark-500 text-xs font-mono mb-4 uppercase tracking-widest">{tr.about.selectStack}</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {stacks.map((stack) => {
               const isActive = activeId === stack.id;
+              const label = tr.about.stacks[stack.id];
               const related = getRelatedProjects(projects, stack.keywords);
               return (
                 <button
                   key={stack.id}
                   onClick={() => setActiveId(stack.id)}
-                  className={`relative text-left p-5 rounded-2xl border transition-all duration-300 group ${isActive ? stack.tabActive : stack.tabInactive}`}
+                  className={`relative text-left p-5 rounded-2xl border transition-all duration-300 ${isActive ? stack.tabActive : stack.tabInactive}`}
                 >
-                  {/* Active indicator */}
                   {isActive && (
-                    <motion.div
-                      layoutId="active-tab-indicator"
-                      className={`absolute top-3 right-3 w-2 h-2 rounded-full ${stack.dot}`}
-                    />
+                    <motion.div layoutId="active-tab-indicator"
+                      className={`absolute top-3 right-3 w-2 h-2 rounded-full ${stack.dot}`} />
                   )}
-
                   <div className={`w-10 h-10 rounded-xl ${stack.iconBg} flex items-center justify-center mb-3`}>
                     <stack.icon size={18} className={stack.iconColor} />
                   </div>
-                  <h3 className="font-semibold text-white text-sm mb-1 leading-tight">{stack.title}</h3>
-                  <p className="text-dark-600 text-xs mb-3 leading-relaxed">{stack.subtitle}</p>
-
+                  <h3 className="font-semibold text-white text-sm mb-1 leading-tight">{label.title}</h3>
+                  <p className="text-dark-600 text-xs mb-3 leading-relaxed">{label.subtitle}</p>
                   <div className="flex items-center justify-between">
                     <span className={`text-xs font-mono ${isActive ? stack.accent : 'text-dark-600'} transition-colors`}>
-                      {related.length} project{related.length !== 1 ? 's' : ''}
+                      {tr.about.projectCount(related.length)}
                     </span>
                     <ChevronRight size={13} className={`transition-all duration-300 ${isActive ? `${stack.accent} translate-x-0.5` : 'text-dark-700'}`} />
                   </div>
@@ -279,7 +215,7 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           </div>
         </motion.div>
 
-        {/* Active stack detail + related projects */}
+        {/* Active detail panel */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeId}
@@ -289,15 +225,14 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
             transition={{ duration: 0.3 }}
             className={`rounded-2xl border ${activeStack.cardBorder} overflow-hidden`}
           >
-            <div className={`grid md:grid-cols-[280px_1fr] divide-y md:divide-y-0 md:divide-x divide-white/5`}>
-
+            <div className="grid md:grid-cols-[280px_1fr] divide-y md:divide-y-0 md:divide-x divide-white/5">
               {/* Stack items */}
               <div className={`p-6 ${activeStack.cardBg}`}>
                 <div className="flex items-center gap-2 mb-5">
                   <div className={`w-8 h-8 rounded-lg ${activeStack.iconBg} flex items-center justify-center`}>
                     <activeStack.icon size={15} className={activeStack.iconColor} />
                   </div>
-                  <h3 className={`text-sm font-semibold ${activeStack.accent}`}>{activeStack.title}</h3>
+                  <h3 className={`text-sm font-semibold ${activeStack.accent}`}>{stackLabel.title}</h3>
                 </div>
                 <ul className="space-y-3">
                   {activeStack.items.map((item, i) => (
@@ -315,15 +250,15 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
                 </ul>
               </div>
 
-              {/* Related Projects */}
+              {/* Related projects */}
               <div className="p-6">
                 <p className="text-xs font-mono text-dark-600 uppercase tracking-widest mb-4">
-                  Related Projects
+                  {tr.about.relatedProjects}
                 </p>
                 {relatedProjects.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10 text-dark-600 text-sm">
                     <span className="text-2xl mb-2">🔨</span>
-                    Building something here...
+                    {tr.about.buildingHere}
                   </div>
                 ) : (
                   <div className="grid sm:grid-cols-2 gap-3">

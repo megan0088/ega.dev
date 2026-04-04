@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@/lib/theme-context';
+import { LangProvider } from '@/lib/lang-context';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark scroll-smooth">
       <body className="bg-dark-950 text-white antialiased">
         <ThemeProvider>
+          <LangProvider>
           {children}
+          </LangProvider>
           <Toaster
             position="bottom-right"
             toastOptions={{

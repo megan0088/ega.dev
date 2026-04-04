@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import type { Skill, SkillCategory } from '@/types';
+import { useLang } from '@/lib/lang-context';
 
 interface SkillsSectionProps {
   categories: SkillCategory[];
@@ -28,7 +29,7 @@ const tierDot: Record<Tier, string> = {
   Mastery:      'bg-accent-emerald',
 };
 
-function SkillBadge({ name, level, index }: { name: string; level: number; index: number }) {
+function SkillBadge({ name, level, index, label }: { name: string; level: number; index: number; label: string }) {
   const tier = getTier(level);
   return (
     <motion.div
@@ -41,13 +42,14 @@ function SkillBadge({ name, level, index }: { name: string; level: number; index
       <span className="text-sm text-dark-300">{name}</span>
       <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border shrink-0 ${tierStyle[tier]}`}>
         <span className={`w-1.5 h-1.5 rounded-full ${tierDot[tier]}`} />
-        {tier}
+        {label}
       </span>
     </motion.div>
   );
 }
 
 export default function SkillsSection({ categories, skills }: SkillsSectionProps) {
+  const { tr } = useLang();
   if (categories.length === 0) return null;
 
   return (
@@ -62,9 +64,9 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
           className="mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>skills
+            <span className="text-brand-400">// </span>{tr.skills.tag}
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">What I Work With</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white">{tr.skills.title}</h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -86,7 +88,13 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
                 </div>
                 <div>
                   {catSkills.map((skill, si) => (
-                    <SkillBadge key={skill.id} name={skill.name} level={skill.level} index={si} />
+                    <SkillBadge
+                      key={skill.id}
+                      name={skill.name}
+                      level={skill.level}
+                      index={si}
+                      label={tr.skills.tiers[getTier(skill.level)]}
+                    />
                   ))}
                 </div>
               </motion.div>
@@ -105,7 +113,7 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
           {(['Beginner', 'Intermediate', 'Mastery'] as Tier[]).map(tier => (
             <span key={tier} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${tierStyle[tier]}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${tierDot[tier]}`} />
-              {tier}
+              {tr.skills.tiers[tier]}
             </span>
           ))}
         </motion.div>

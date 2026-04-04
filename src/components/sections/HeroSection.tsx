@@ -5,32 +5,35 @@ import { ArrowDown, GitBranch, Globe, Mail, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Profile } from '@/types';
+import { useLang } from '@/lib/lang-context';
 
 interface HeroSectionProps {
   profile: Profile | null;
 }
 
 export default function HeroSection({ profile }: HeroSectionProps) {
-  const name = profile?.name ?? 'Muhamad Ega Nugraha';
-  const title = profile?.title ?? 'Software Engineer & SAP B1 Technical Consultant';
-  const subtitle = profile?.subtitle ?? 'Building innovative digital solutions — from full-stack web apps and Flutter mobile apps to IoT systems and enterprise SAP integrations.';
-  const statusText = profile?.status_text ?? 'Available for opportunities';
-  const techBadges = profile?.tech_badges ?? ['Next.js', 'Flutter', 'TypeScript', 'Supabase', 'SAP B1'];
-  const avatarUrl = profile?.avatar_url ?? null;
-  const githubUrl = profile?.github_url ?? 'https://github.com/megan0088';
-  const linkedinUrl = profile?.linkedin_url ?? 'https://linkedin.com/in/ega-nugraha';
-  const email = profile?.email ?? 'eganeue@gmail.com';
+  const { tr } = useLang();
+
+  const name           = profile?.name           ?? 'Muhamad Ega Nugraha';
+  const title          = profile?.title          ?? 'Software Engineer & SAP B1 Technical Consultant';
+  const subtitle       = profile?.subtitle       ?? 'Building innovative digital solutions — from full-stack web apps and Flutter mobile apps to IoT systems and enterprise SAP integrations.';
+  const statusText     = profile?.status_text    ?? 'Available for opportunities';
+  const techBadges     = profile?.tech_badges    ?? ['Next.js', 'Flutter', 'TypeScript', 'Supabase', 'SAP B1'];
+  const avatarUrl      = profile?.avatar_url     ?? null;
+  const githubUrl      = profile?.github_url     ?? 'https://github.com/megan0088';
+  const linkedinUrl    = profile?.linkedin_url   ?? 'https://linkedin.com/in/ega-nugraha';
+  const email          = profile?.email          ?? 'eganeue@gmail.com';
   const currentlyLearning = profile?.currently_learning ?? null;
 
   const socialLinks = [
-    { icon: GitBranch, href: githubUrl, label: 'GitHub' },
-    { icon: Globe, href: linkedinUrl, label: 'LinkedIn' },
-    { icon: Mail, href: `mailto:${email}`, label: 'Email' },
+    { icon: GitBranch, href: githubUrl,           label: 'GitHub' },
+    { icon: Globe,     href: linkedinUrl,          label: 'LinkedIn' },
+    { icon: Mail,      href: `mailto:${email}`,    label: 'Email' },
   ];
 
   const nameParts = name.split(' ');
   const firstName = nameParts[0];
-  const restName = nameParts.slice(1).join(' ');
+  const restName  = nameParts.slice(1).join(' ');
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-grid">
@@ -75,10 +78,10 @@ export default function HeroSection({ profile }: HeroSectionProps) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-10">
               <Link href="#experience" className="inline-flex items-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 shadow-glow-sm hover:shadow-glow active:scale-95">
-                View Experience <ExternalLink size={16} />
+                {tr.hero.viewExperience} <ExternalLink size={16} />
               </Link>
               <Link href="#contact" className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95">
-                Get in Touch <Mail size={16} />
+                {tr.hero.getInTouch} <Mail size={16} />
               </Link>
             </div>
 
