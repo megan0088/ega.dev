@@ -40,7 +40,7 @@ export default function SkillsManager() {
   const [editSkill, setEditSkill] = useState<Skill | null>(null);
   const [skillCategoryId, setSkillCategoryId] = useState('');
   const [skillName, setSkillName] = useState('');
-  const [skillLevel, setSkillLevel] = useState('80');
+  const [skillLevel, setSkillLevel] = useState(80);
   const [skillSaving, setSkillSaving] = useState(false);
 
   // Delete
@@ -90,14 +90,14 @@ export default function SkillsManager() {
     setEditSkill(skill ?? null);
     setSkillCategoryId(categoryId);
     setSkillName(skill?.name ?? '');
-    setSkillLevel(String(skill?.level ?? 80));
+    setSkillLevel(skill?.level ?? 80);
     setSkillModal(true);
   };
 
   const saveSkill = async () => {
     if (!skillName.trim()) return;
     setSkillSaving(true);
-    const level = Math.min(100, Math.max(0, parseInt(skillLevel) || 80));
+    const level = skillLevel;
     try {
       if (editSkill) {
         const updated = await updateSkill(editSkill.id, { name: skillName, level });
@@ -203,14 +203,11 @@ export default function SkillsManager() {
                       <div className="px-4 pb-3 border-t border-white/5 pt-3 space-y-2">
                         {catSkills.map(skill => (
                           <div key={skill.id} className="flex items-center gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm text-dark-300">{skill.name}</span>
-                                <span className="text-xs font-mono text-dark-500">{skill.level}%</span>
-                              </div>
-                              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                <div className={`h-full rounded-full bg-gradient-to-r ${cat.color}`} style={{ width: `${skill.level}%` }} />
-                              </div>
+                            <div className="flex-1 flex items-center justify-between">
+                              <span className="text-sm text-dark-300">{skill.name}</span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${skill.level >= 80 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : skill.level >= 41 ? 'bg-brand-500/10 border-brand-500/30 text-brand-300' : 'bg-white/5 border-white/10 text-dark-400'}`}>
+                                {skill.level >= 80 ? 'Mastery' : skill.level >= 41 ? 'Intermediate' : 'Beginner'}
+                              </span>
                             </div>
                             <button onClick={() => openSkillModal(cat.id, skill)}
                               className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-white/10 transition-colors shrink-0">
@@ -264,11 +261,22 @@ export default function SkillsManager() {
         <div className="space-y-4">
           <Input label="Skill Name" value={skillName} onChange={e => setSkillName(e.target.value)} placeholder="e.g. Next.js" />
           <div>
-            <Input label="Proficiency Level (0–100)" type="number" value={skillLevel}
-              onChange={e => setSkillLevel(e.target.value)} placeholder="80" hint="0 = beginner, 100 = expert" />
-            <div className="mt-3 h-2 bg-white/5 rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-400 transition-all"
-                style={{ width: `${Math.min(100, parseInt(skillLevel) || 0)}%` }} />
+            <label className="block text-sm font-medium text-dark-300 mb-2">Proficiency Level</label>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { label: 'Beginner', value: 33, style: 'border-white/10 text-dark-400', active: 'border-white/30 bg-white/10 text-white' },
+                { label: 'Intermediate', value: 66, style: 'border-brand-500/30 text-brand-400', active: 'border-brand-500 bg-brand-500/20 text-brand-300' },
+                { label: 'Mastery', value: 100, style: 'border-emerald-500/30 text-emerald-400', active: 'border-emerald-500 bg-emerald-500/20 text-emerald-300' },
+              ] as const).map(opt => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onClick={() => setSkillLevel(opt.value)}
+                  className={`py-2.5 rounded-xl border text-sm font-medium transition-all ${skillLevel === opt.value ? opt.active : `bg-transparent ${opt.style} hover:opacity-80`}`}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">

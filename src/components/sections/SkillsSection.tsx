@@ -8,28 +8,41 @@ interface SkillsSectionProps {
   skills: Skill[];
 }
 
-function SkillBar({ name, level, color, index }: { name: string; level: number; color: string; index: number }) {
+type Tier = 'Beginner' | 'Intermediate' | 'Mastery';
+
+function getTier(level: number): Tier {
+  if (level >= 80) return 'Mastery';
+  if (level >= 41) return 'Intermediate';
+  return 'Beginner';
+}
+
+const tierStyle: Record<Tier, string> = {
+  Beginner:     'bg-white/5 border-white/10 text-dark-400',
+  Intermediate: 'bg-brand-500/10 border-brand-500/30 text-brand-300',
+  Mastery:      'bg-accent-emerald/10 border-accent-emerald/30 text-emerald-300',
+};
+
+const tierDot: Record<Tier, string> = {
+  Beginner:     'bg-dark-500',
+  Intermediate: 'bg-brand-400',
+  Mastery:      'bg-accent-emerald',
+};
+
+function SkillBadge({ name, level, index }: { name: string; level: number; index: number }) {
+  const tier = getTier(level);
   return (
     <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 6 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.07 }}
-      className="group"
+      transition={{ delay: index * 0.06 }}
+      className="flex items-center justify-between gap-3 py-2 border-b border-white/5 last:border-0"
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm text-dark-300 group-hover:text-white transition-colors">{name}</span>
-        <span className="text-xs font-mono text-dark-500 group-hover:text-dark-300 transition-colors">{level}%</span>
-      </div>
-      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-        <motion.div
-          className={`h-full rounded-full bg-gradient-to-r ${color}`}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: index * 0.07, ease: 'easeOut' }}
-        />
-      </div>
+      <span className="text-sm text-dark-300">{name}</span>
+      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border shrink-0 ${tierStyle[tier]}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${tierDot[tier]}`} />
+        {tier}
+      </span>
     </motion.div>
   );
 }
@@ -65,21 +78,37 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: gi * 0.1 }}
-                className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/15 transition-all duration-300"
+                className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/[0.07] hover:border-white/15 transition-all duration-300"
               >
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 mb-5">
                   <div className={`h-1 w-8 rounded-full bg-gradient-to-r ${cat.color}`} />
                   <h3 className="text-sm font-semibold text-white">{cat.name}</h3>
                 </div>
-                <div className="space-y-4">
+                <div>
                   {catSkills.map((skill, si) => (
-                    <SkillBar key={skill.id} name={skill.name} level={skill.level} color={cat.color} index={si} />
+                    <SkillBadge key={skill.id} name={skill.name} level={skill.level} index={si} />
                   ))}
                 </div>
               </motion.div>
             );
           })}
         </div>
+
+        {/* Legend */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-8 flex items-center justify-center gap-6"
+        >
+          {(['Beginner', 'Intermediate', 'Mastery'] as Tier[]).map(tier => (
+            <span key={tier} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${tierStyle[tier]}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${tierDot[tier]}`} />
+              {tier}
+            </span>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
