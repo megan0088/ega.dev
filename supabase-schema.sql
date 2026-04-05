@@ -98,6 +98,10 @@ CREATE TABLE IF NOT EXISTS skills (
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS seo_title TEXT;
 ALTER TABLE profile ADD COLUMN IF NOT EXISTS seo_description TEXT;
 
+-- Add project preview columns
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS preview_type TEXT CHECK (preview_type IN ('web','model3d','video','sketchfab'));
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS preview_url TEXT;
+
 -- ============================================================
 -- Row Level Security (RLS)
 -- ============================================================

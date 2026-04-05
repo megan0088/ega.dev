@@ -20,6 +20,8 @@ export const projectSchema = z.object({
   live_url: z.string().url('Must be a valid URL').nullable().optional().or(z.literal('')),
   image_url: z.string().nullable().optional(),
   is_featured: z.boolean(),
+  preview_type: z.enum(['web', 'model3d', 'video', 'sketchfab']).nullable().optional(),
+  preview_url: z.string().nullable().optional(),
 });
 
 export type ProjectSchema = z.infer<typeof projectSchema>;

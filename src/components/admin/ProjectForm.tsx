@@ -2,7 +2,7 @@
 
 import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Globe, Box, Video, Layers } from 'lucide-react';
 import { projectSchema, type ProjectSchema } from '@/lib/validations';
 import type { Project } from '@/types';
 import Input from '@/components/ui/Input';
@@ -16,27 +16,32 @@ interface ProjectFormProps {
   isSubmitting?: boolean;
 }
 
+const previewTypes = [
+  { value: 'web',       label: 'Web / iframe',     icon: Globe,  hint: 'Embed website directly (needs live URL)' },
+  { value: 'model3d',   label: '3D Model (.glb)',   icon: Box,    hint: 'Interactive 3D model viewer' },
+  { value: 'video',     label: 'Video (.mp4)',       icon: Video,  hint: 'Video showcase / animation reel' },
+  { value: 'sketchfab', label: 'Sketchfab',          icon: Layers, hint: 'Embed from Sketchfab URL' },
+] as const;
+
 export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: ProjectFormProps) {
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<ProjectSchema>({
+  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<ProjectSchema>({
     resolver: zodResolver(projectSchema),
     defaultValues: defaultValues
       ? {
-          title: defaultValues.title,
-          description: defaultValues.description,
-          tech_stack: defaultValues.tech_stack.length > 0 ? defaultValues.tech_stack : [''],
-          github_url: defaultValues.github_url ?? '',
-          live_url: defaultValues.live_url ?? '',
-          image_url: defaultValues.image_url ?? '',
-          is_featured: defaultValues.is_featured,
+          title:        defaultValues.title,
+          description:  defaultValues.description,
+          tech_stack:   defaultValues.tech_stack.length > 0 ? defaultValues.tech_stack : [''],
+          github_url:   defaultValues.github_url  ?? '',
+          live_url:     defaultValues.live_url    ?? '',
+          image_url:    defaultValues.image_url   ?? '',
+          is_featured:  defaultValues.is_featured,
+          preview_type: defaultValues.preview_type ?? null,
+          preview_url:  defaultValues.preview_url  ?? '',
         }
       : {
-          title: '',
-          description: '',
-          tech_stack: [''],
-          github_url: '',
-          live_url: '',
-          image_url: '',
-          is_featured: false,
+          title: '', description: '', tech_stack: [''],
+          github_url: '', live_url: '', image_url: '',
+          is_featured: false, preview_type: null, preview_url: '',
         },
   });
 
@@ -46,23 +51,15 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
     name: 'tech_stack',
   });
 
-  const imageUrl = useWatch({ control, name: 'image_url' });
+  const imageUrl    = useWatch({ control, name: 'image_url' });
+  const previewType = watch('preview_type');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <Input
-        label="Project Title"
-        placeholder="e.g. SiapAda App"
-        error={errors.title?.message}
-        {...register('title')}
-      />
+      <Input label="Project Title" placeholder="e.g. SiapAda App" error={errors.title?.message} {...register('title')} />
 
-      <Textarea
-        label="Description"
-        placeholder="Brief description of what the project does..."
-        error={errors.description?.message}
-        {...register('description')}
-      />
+      <Textarea label="Description" placeholder="Brief description of what the project does..."
+        error={errors.description?.message} {...register('description')} />
 
       {/* Tech stack */}
       <div>
@@ -96,12 +93,61 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
       </div>
 
       {/* Image Upload */}
-      <ImageUpload
-        label="Project Image"
-        value={imageUrl}
-        onChange={(url) => setValue('image_url', url ?? '')}
-        folder="projects"
-      />
+      <ImageUpload label="Project Image" value={imageUrl} onChange={(url) => setValue('image_url', url ?? '')} folder="projects" />
+
+      {/* Preview / Sandbox */}
+      <div>
+        <label className="block text-sm font-medium text-dark-300 mb-2">Interactive Preview</label>
+        <p className="text-xs text-dark-500 mb-3">Let visitors try your project directly on the portfolio.</p>
+
+        {/* Type selector */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <button type="button" onClick={() => setValue('preview_type', null)}
+            className={`py-2.5 px-3 rounded-xl border text-xs font-medium transition-all text-left ${!previewType ? 'border-brand-500 bg-brand-500/10 text-brand-300' : 'border-white/10 text-dark-500 hover:border-white/20'}`}>
+            No preview
+          </button>
+          {previewTypes.map(({ value, label, icon: Icon, hint }) => (
+            <button key={value} type="button" onClick={() => setValue('preview_type', value)}
+              className={`py-2.5 px-3 rounded-xl border text-xs font-medium transition-all text-left flex items-start gap-2 ${previewType === value ? 'border-brand-500 bg-brand-500/10 text-brand-300' : 'border-white/10 text-dark-500 hover:border-white/20'}`}>
+              <Icon size={13} className="mt-0.5 shrink-0" />
+              <div>
+                <div>{label}</div>
+                <div className={`text-[10px] mt-0.5 ${previewType === value ? 'text-brand-400/70' : 'text-dark-600'}`}>{hint}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Preview URL / upload based on type */}
+        {previewType === 'web' && (
+          <Input label="Preview URL (defaults to Live URL if empty)"
+            placeholder="https://yourapp.com"
+            hint="Site must allow iframe embedding"
+            {...register('preview_url')} />
+        )}
+        {previewType === 'sketchfab' && (
+          <Input label="Sketchfab Embed URL"
+            placeholder="https://sketchfab.com/models/xxx/embed"
+            hint="Copy embed URL from Sketchfab share dialog"
+            {...register('preview_url')} />
+        )}
+        {previewType === 'model3d' && (
+          <ImageUpload
+            label="Upload 3D Model (.glb / .gltf)"
+            value={useWatch({ control, name: 'preview_url' })}
+            onChange={(url) => setValue('preview_url', url ?? '')}
+            folder="models"
+          />
+        )}
+        {previewType === 'video' && (
+          <ImageUpload
+            label="Upload Video (.mp4 / .webm)"
+            value={useWatch({ control, name: 'preview_url' })}
+            onChange={(url) => setValue('preview_url', url ?? '')}
+            folder="videos"
+          />
+        )}
+      </div>
 
       <div className="flex items-center gap-3">
         <input type="checkbox" id="is_featured"

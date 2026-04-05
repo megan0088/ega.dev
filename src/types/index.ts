@@ -19,6 +19,8 @@ export interface Project {
   live_url: string | null;
   image_url: string | null;
   is_featured: boolean;
+  preview_type: 'web' | 'model3d' | 'video' | 'sketchfab' | null;
+  preview_url: string | null;
   created_at: string;
 }
 
