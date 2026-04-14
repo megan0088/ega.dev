@@ -349,3 +349,118 @@ INSERT INTO skills (category_id, name, level, sort_order) VALUES
   ((SELECT id FROM cat5), 'Keyframe Animation', 100, 2),
   ((SELECT id FROM cat5), 'UV Mapping & Texturing', 100, 3),
   ((SELECT id FROM cat5), 'Rendering & Lighting', 100, 4);
+
+-- ============================================================
+-- Seed: Projects
+-- Run only the INSERT block if starting fresh.
+-- Run the UPDATE block if you already have data in the table.
+-- ============================================================
+
+INSERT INTO projects (title, description, tech_stack, github_url, live_url, image_url, is_featured, preview_type, preview_url) VALUES
+
+-- ── Featured ──────────────────────────────────────────────────────────────
+(
+  'Holticura',
+  'An end-to-end IoT monitoring system for ginger plant cultivation, built to help small-scale farmers in North Sumatra. An Arduino Uno collects real-time soil moisture, pH, and TDS (nutrient) readings via analog sensors and streams the data to the Blynk IoT dashboard over Wi-Fi using an ESP8266 module. Farmers can monitor field conditions remotely from any device and receive automated alerts when values fall outside healthy thresholds.',
+  ARRAY['Arduino', 'C++', 'ESP8266', 'Blynk', 'IoT', 'Sensor'],
+  'https://github.com/megan0088/holticura',
+  NULL, NULL, TRUE, NULL, NULL
+),
+(
+  'Plate Recognition',
+  'A full-stack license plate detection system combining a Python/Flask REST API with a Flutter mobile client. The backend processes uploaded images through an OpenCV pipeline to isolate the plate region, then feeds the result to Tesseract OCR to extract the plate number. The Flutter app lets users capture or pick an image, calls the API, and displays the recognized plate in real time — targeting use cases like toll management and traffic monitoring.',
+  ARRAY['Python', 'Flask', 'OpenCV', 'Tesseract OCR', 'Flutter', 'Dart', 'REST API'],
+  'https://github.com/megan0088/plate_recognition',
+  NULL, NULL, TRUE, NULL, NULL
+),
+(
+  'Karir AI',
+  'An AI-powered career counseling app built with Flutter. Users input their interests, existing skills, and life goals; the app sends the profile to an LLM via the OpenRouter API and returns a personalized career roadmap with actionable next steps. State is managed with GetX, consultation history is persisted locally, and the UI features Lottie animations and Google Fonts for a polished experience.',
+  ARRAY['Flutter', 'Dart', 'OpenRouter API', 'LLM', 'GetX', 'Lottie'],
+  'https://github.com/megan0088/karir_ai',
+  NULL, NULL, FALSE, NULL, NULL
+),
+(
+  'Jarvis',
+  'A macOS companion app built entirely in Swift and SwiftUI. A floating pet-buddy lives persistently on your desktop and sends contextual wellness reminders — drink water, stretch, take a break, eat — based on elapsed time. The pet''s mood and animation state evolve dynamically depending on how consistently you respond to its nudges, creating a light gamified loop that encourages healthier work habits.',
+  ARRAY['Swift', 'SwiftUI', 'SpriteKit', 'AppKit', 'ActivityKit'],
+  'https://github.com/megan0088/Jarvis',
+  NULL, NULL, FALSE, NULL, NULL
+),
+
+-- ── Web ───────────────────────────────────────────────────────────────────
+(
+  'Rekomendasi Film',
+  'A movie discovery platform built with Next.js 14 and the TMDB API. The home page surfaces trending and top-rated titles; a live search bar queries the API as you type. Each movie opens a detail page with cast, synopsis, runtime, and a "Similar Movies" section. The UI is fully responsive and server-side rendered for fast initial loads.',
+  ARRAY['Next.js 14', 'TypeScript', 'Tailwind CSS', 'TMDB API', 'SSR'],
+  'https://github.com/megan0088/rekomendasi-film',
+  NULL, NULL, FALSE, NULL, NULL
+),
+(
+  'Toko Online',
+  'A lightweight e-commerce storefront powered by Next.js 14 and the Fake Store API. Products are fetched server-side and rendered in a responsive grid with category filtering. Each product has a dedicated detail page with add-to-cart interaction. Built as a demonstration of Next.js App Router conventions, dynamic routing, and server components.',
+  ARRAY['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Fake Store API', 'App Router'],
+  'https://github.com/megan0088/toko-online',
+  'https://toko-online-jade.vercel.app',
+  NULL, FALSE, NULL, NULL
+),
+
+-- ── Mobile ────────────────────────────────────────────────────────────────
+(
+  'EnterKomFlix',
+  'A feature-complete movie browsing app built in Flutter for a technical assessment. The home screen shows Now Playing and Popular sections (sourced from TMDB), with support for adding films to a personal Watchlist or Favorites. Users can log in or browse as a guest. The detail screen includes full movie info, genre tags, and a Similar Movies carousel — all managed with clean widget composition.',
+  ARRAY['Flutter', 'Dart', 'TMDB API', 'Mobile'],
+  'https://github.com/megan0088/EnterKomFlix',
+  NULL, NULL, FALSE, NULL, NULL
+),
+(
+  'Kotlin News App',
+  'An Android news reader app built natively in Kotlin. Fetches live headlines from a news API and displays them in a RecyclerView with article thumbnails, titles, and source info. Tapping an article opens the full content in a detail screen. Demonstrates core Android development patterns: ViewModel, LiveData, Retrofit, and RecyclerView with a clean MVVM structure.',
+  ARRAY['Kotlin', 'Android', 'Retrofit', 'MVVM', 'LiveData'],
+  'https://github.com/megan0088/kotlin_newsapp',
+  NULL, NULL, FALSE, NULL, NULL
+)
+
+ON CONFLICT DO NOTHING;
+
+-- ============================================================
+-- Update existing rows (run this if you already ran the INSERT above
+-- in a previous session — safe to run multiple times)
+-- ============================================================
+
+UPDATE projects SET
+  description  = 'An end-to-end IoT monitoring system for ginger plant cultivation, built to help small-scale farmers in North Sumatra. An Arduino Uno collects real-time soil moisture, pH, and TDS (nutrient) readings via analog sensors and streams the data to the Blynk IoT dashboard over Wi-Fi using an ESP8266 module. Farmers can monitor field conditions remotely from any device and receive automated alerts when values fall outside healthy thresholds.',
+  tech_stack   = ARRAY['Arduino', 'C++', 'ESP8266', 'Blynk', 'IoT', 'Sensor'],
+  is_featured  = TRUE
+WHERE title = 'Holticura';
+
+UPDATE projects SET
+  description  = 'A full-stack license plate detection system combining a Python/Flask REST API with a Flutter mobile client. The backend processes uploaded images through an OpenCV pipeline to isolate the plate region, then feeds the result to Tesseract OCR to extract the plate number. The Flutter app lets users capture or pick an image, calls the API, and displays the recognized plate in real time.',
+  tech_stack   = ARRAY['Python', 'Flask', 'OpenCV', 'Tesseract OCR', 'Flutter', 'Dart', 'REST API'],
+  is_featured  = TRUE
+WHERE title = 'Plate Recognition';
+
+UPDATE projects SET
+  description  = 'An AI-powered career counseling app built with Flutter. Users input their interests, existing skills, and life goals; the app sends the profile to an LLM via the OpenRouter API and returns a personalized career roadmap with actionable next steps. State is managed with GetX and consultation history is persisted locally.',
+  tech_stack   = ARRAY['Flutter', 'Dart', 'OpenRouter API', 'LLM', 'GetX', 'Lottie']
+WHERE title = 'Karir AI';
+
+UPDATE projects SET
+  description  = 'A macOS companion app built entirely in Swift and SwiftUI. A floating pet-buddy lives persistently on your desktop and sends contextual wellness reminders based on elapsed time. The pet''s mood and animation state evolve dynamically depending on how consistently you respond to its nudges, creating a light gamified loop that encourages healthier work habits.',
+  is_featured  = FALSE
+WHERE title = 'Jarvis';
+
+UPDATE projects SET
+  description  = 'A movie discovery platform built with Next.js 14 and the TMDB API. The home page surfaces trending and top-rated titles; a live search bar queries the API as you type. Each movie opens a detail page with cast, synopsis, runtime, and a Similar Movies section. Fully responsive and server-side rendered.',
+  tech_stack   = ARRAY['Next.js 14', 'TypeScript', 'Tailwind CSS', 'TMDB API', 'SSR'],
+  live_url     = NULL,
+  preview_url  = NULL,
+  preview_type = NULL
+WHERE title = 'Rekomendasi Film';
+
+UPDATE projects SET
+  description  = 'A lightweight e-commerce storefront powered by Next.js 14 and the Fake Store API. Products are fetched server-side and rendered in a responsive grid with category filtering. Each product has a dedicated detail page with add-to-cart interaction. Built as a demonstration of Next.js App Router conventions, dynamic routing, and server components.',
+  tech_stack   = ARRAY['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Fake Store API', 'App Router'],
+  preview_url  = NULL,
+  preview_type = NULL
+WHERE title = 'Toko Online';
