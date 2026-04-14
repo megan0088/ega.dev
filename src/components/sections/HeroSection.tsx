@@ -116,7 +116,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
 
               {currentlyLearning && (
                 <motion.div
-                  className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full bg-dark-900 border border-brand-500/40 text-xs font-medium text-brand-300 whitespace-nowrap shadow-lg max-w-[180px] text-center"
+                  className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full bg-dark-900 border border-brand-500/40 text-xs font-medium text-brand-300 whitespace-nowrap shadow-lg"
                   animate={{ y: [0, -4, 0] }}
                   transition={{ repeat: Infinity, duration: 3 }}
                 >
