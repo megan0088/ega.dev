@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import type { Profile, Project } from '@/types';
 import { useLang } from '@/lib/lang-context';
+
+const SkillsWebGLCanvas = dynamic(() => import('@/components/ui/SkillsWebGLCanvas'), { ssr: false });
 
 interface AboutSectionProps {
   profile: Profile | null;
@@ -226,29 +229,84 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
             className={`rounded-2xl border ${activeStack.cardBorder} overflow-hidden`}
           >
             <div className="grid md:grid-cols-[280px_1fr] divide-y md:divide-y-0 md:divide-x divide-white/5">
-              {/* Stack items */}
-              <div className={`p-6 ${activeStack.cardBg}`}>
-                <div className="flex items-center gap-2 mb-5">
-                  <div className={`w-8 h-8 rounded-lg ${activeStack.iconBg} flex items-center justify-center`}>
-                    <activeStack.icon size={15} className={activeStack.iconColor} />
+
+              {/* Left panel — WebGL for 3D, normal list otherwise */}
+              {activeId === '3d' ? (
+                <div className="relative bg-[#0a0a0f] overflow-hidden">
+                  {/* Corner brackets */}
+                  {(['tl','tr','bl','br'] as const).map(pos => {
+                    const base = 'absolute w-3 h-3 border-amber-500/50 z-20';
+                    const s: Record<string,string> = { tl:'top-2 left-2 border-t border-l', tr:'top-2 right-2 border-t border-r', bl:'bottom-2 left-2 border-b border-l', br:'bottom-2 right-2 border-b border-r' };
+                    return <span key={pos} className={`${base} ${s[pos]}`} />;
+                  })}
+
+                  {/* Scanline overlay */}
+                  <div className="pointer-events-none absolute inset-0 z-10"
+                    style={{ background: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px)' }} />
+
+                  {/* HUD header */}
+                  <div className="relative z-20 flex items-center justify-between px-4 py-2 border-b border-amber-500/20 bg-amber-500/5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      <span className="text-[10px] font-mono text-amber-400/80 uppercase tracking-widest">3D_MODULE</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-400/60">SYS:ACTIVE</span>
                   </div>
-                  <h3 className={`text-sm font-semibold ${activeStack.accent}`}>{stackLabel.title}</h3>
+
+                  {/* WebGL canvas */}
+                  <div className="relative z-0 h-48 w-full">
+                    <SkillsWebGLCanvas />
+                  </div>
+
+                  {/* HUD skill bars */}
+                  <div className="relative z-20 px-4 py-4 border-t border-amber-500/15 space-y-2.5">
+                    {activeStack.items.map((item, i) => (
+                      <motion.div
+                        key={item}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.07 }}
+                      >
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-[11px] font-mono text-amber-300/80 uppercase tracking-wider">{item}</span>
+                          <span className="text-[10px] font-mono text-cyan-400/60">100%</span>
+                        </div>
+                        <div className="h-[3px] w-full rounded-full bg-white/5 overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full bg-amber-400"
+                            initial={{ width: 0 }}
+                            animate={{ width: '100%' }}
+                            transition={{ duration: 0.8, delay: i * 0.07 + 0.2, ease: 'easeOut' }}
+                          />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-                <ul className="space-y-3">
-                  {activeStack.items.map((item, i) => (
-                    <motion.li
-                      key={item}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.06 }}
-                      className="flex items-center gap-2.5"
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${activeStack.dot}`} />
-                      <span className="text-sm text-dark-300 font-mono">{item}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
+              ) : (
+                <div className={`p-6 ${activeStack.cardBg}`}>
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className={`w-8 h-8 rounded-lg ${activeStack.iconBg} flex items-center justify-center`}>
+                      <activeStack.icon size={15} className={activeStack.iconColor} />
+                    </div>
+                    <h3 className={`text-sm font-semibold ${activeStack.accent}`}>{stackLabel.title}</h3>
+                  </div>
+                  <ul className="space-y-3">
+                    {activeStack.items.map((item, i) => (
+                      <motion.li
+                        key={item}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.06 }}
+                        className="flex items-center gap-2.5"
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${activeStack.dot}`} />
+                        <span className="text-sm text-dark-300 font-mono">{item}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Related projects */}
               <div className="p-6">
