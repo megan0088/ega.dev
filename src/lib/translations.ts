@@ -13,6 +13,7 @@ export const translations = {
     hero: {
       viewExperience: 'View Experience',
       getInTouch: 'Get in Touch',
+      downloadCV: 'Download CV',
       currentlyLearning: 'Currently Learning',
     },
     about: {
@@ -86,6 +87,7 @@ export const translations = {
     hero: {
       viewExperience: 'Lihat Pengalaman',
       getInTouch: 'Hubungi Saya',
+      downloadCV: 'Unduh CV',
       currentlyLearning: 'Sedang Belajar',
     },
     about: {

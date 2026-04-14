@@ -5,21 +5,26 @@ import { ThemeProvider } from '@/lib/theme-context';
 import { LangProvider } from '@/lib/lang-context';
 import '@/styles/globals.css';
 
+const BASE_URL = 'https://ega-dev.vercel.app';
+
 export const metadata: Metadata = {
   title: 'Muhamad Ega Nugraha — Software Engineer',
   description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant based in Indonesia. Building innovative digital solutions.',
   keywords: ['Software Engineer', 'Flutter', 'Next.js', 'SAP B1', 'Full Stack'],
-  authors: [{ name: 'Muhamad Ega Nugraha', url: 'https://portofolio-ega-zeta.vercel.app' }],
+  authors: [{ name: 'Muhamad Ega Nugraha', url: BASE_URL }],
+  metadataBase: new URL(BASE_URL),
   openGraph: {
     title: 'Muhamad Ega Nugraha — Software Engineer',
     description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant.',
     type: 'website',
-    url: 'https://portofolio-ega-zeta.vercel.app',
+    url: BASE_URL,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Muhamad Ega Nugraha — Software Engineer' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Muhamad Ega Nugraha — Software Engineer',
     description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant.',
+    images: ['/og-image.png'],
   },
 };
 

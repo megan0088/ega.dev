@@ -42,6 +42,7 @@ export interface Profile {
   instagram_url: string | null;
   seo_title?: string | null;
   seo_description?: string | null;
+  cv_url?: string | null;
   updated_at: string;
 }
 

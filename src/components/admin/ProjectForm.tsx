@@ -52,6 +52,7 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
   });
 
   const imageUrl    = useWatch({ control, name: 'image_url' });
+  const previewUrl  = useWatch({ control, name: 'preview_url' });
   const previewType = watch('preview_type');
 
   return (
@@ -134,7 +135,7 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
         {previewType === 'model3d' && (
           <ImageUpload
             label="Upload 3D Model (.glb / .gltf)"
-            value={useWatch({ control, name: 'preview_url' })}
+            value={previewUrl}
             onChange={(url) => setValue('preview_url', url ?? '')}
             folder="models"
           />
@@ -142,7 +143,7 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
         {previewType === 'video' && (
           <ImageUpload
             label="Upload Video (.mp4 / .webm)"
-            value={useWatch({ control, name: 'preview_url' })}
+            value={previewUrl}
             onChange={(url) => setValue('preview_url', url ?? '')}
             folder="videos"
           />

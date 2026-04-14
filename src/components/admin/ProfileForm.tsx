@@ -30,6 +30,7 @@ const profileSchema = z.object({
   instagram_url: z.string().nullable().optional(),
   seo_title: z.string().nullable().optional(),
   seo_description: z.string().nullable().optional(),
+  cv_url: z.string().nullable().optional(),
 });
 
 type ProfileSchema = z.infer<typeof profileSchema>;
@@ -138,6 +139,7 @@ export default function ProfileForm() {
         email: data.email || null,
         phone: data.phone || null,
         instagram_url: data.instagram_url || null,
+        cv_url: data.cv_url || null,
       });
       toast.success('Profile saved!');
     } catch (err) {
@@ -268,6 +270,14 @@ export default function ProfileForm() {
             <Input label="SEO Title" error={errors.seo_title?.message} placeholder="Muhamad Ega Nugraha — Software Engineer" {...register('seo_title')} hint="Shown on browser tab and Google search results" />
             <Textarea label="SEO Description" error={errors.seo_description?.message} placeholder="Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant based in Indonesia." {...register('seo_description')} hint="Shown in Google search results (max 160 characters)" />
           </div>
+        </div>
+
+        {/* CV */}
+        <div>
+          <h3 className="text-xs font-semibold text-dark-500 uppercase tracking-widest mb-4 flex items-center gap-3">
+            <span className="flex-1 h-px bg-white/10" />CV / Resume<span className="flex-1 h-px bg-white/10" />
+          </h3>
+          <Input label="CV URL" error={errors.cv_url?.message} placeholder="https://drive.google.com/..." {...register('cv_url')} hint="Direct link to your CV file (Google Drive, Dropbox, etc). A Download CV button will appear on the hero section." />
         </div>
 
         <div className="flex justify-end pt-2">

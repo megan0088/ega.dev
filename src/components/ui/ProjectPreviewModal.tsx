@@ -19,7 +19,7 @@ const deviceConfig: Record<Device, { width: string; label: string; icon: React.E
 };
 
 
-function WebPreview({ url, device }: { url: string; device: Device }) {
+function WebPreview({ url, device, onDeviceChange }: { url: string; device: Device; onDeviceChange: (d: Device) => void }) {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [key, setKey] = useState(0);
 
@@ -28,8 +28,13 @@ function WebPreview({ url, device }: { url: string; device: Device }) {
       {/* Device switcher */}
       <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10 shrink-0">
         {(Object.entries(deviceConfig) as [Device, typeof deviceConfig[Device]][]).map(([d, cfg]) => (
-          <button key={d} disabled className="px-3 py-1.5 rounded-lg text-xs font-medium text-dark-500 cursor-default">
+          <button
+            key={d}
+            onClick={() => onDeviceChange(d)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${device === d ? 'bg-brand-600 text-white' : 'text-dark-400 hover:text-white hover:bg-white/5'}`}
+          >
             <cfg.icon size={13} />
+            <span className="hidden sm:inline">{cfg.label}</span>
           </button>
         ))}
       </div>
@@ -183,18 +188,6 @@ export default function ProjectPreviewModal({ project, onClose }: Props) {
               <p className="text-dark-500 text-xs truncate">{project.description}</p>
             </div>
 
-            {/* Device switcher — only for web */}
-            {type === 'web' && (
-              <div className="hidden sm:flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
-                {(Object.entries(deviceConfig) as [Device, typeof deviceConfig[Device]][]).map(([d, cfg]) => (
-                  <button key={d} onClick={() => setDevice(d)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${device === d ? 'bg-brand-600 text-white' : 'text-dark-400 hover:text-white hover:bg-white/5'}`}>
-                    <cfg.icon size={13} />
-                    <span className="hidden md:inline">{cfg.label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
 
             {/* Links */}
             <div className="flex items-center gap-2">
@@ -230,7 +223,7 @@ export default function ProjectPreviewModal({ project, onClose }: Props) {
                 )}
               </div>
             ) : type === 'web' ? (
-              <WebPreview url={previewUrl} device={device} />
+              <WebPreview url={previewUrl} device={device} onDeviceChange={setDevice} />
             ) : type === 'model3d' ? (
               <ModelPreview url={previewUrl} />
             ) : type === 'video' ? (

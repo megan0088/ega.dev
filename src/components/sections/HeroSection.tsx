@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowDown, GitBranch, Globe, Mail, ExternalLink } from 'lucide-react';
+import { ArrowDown, GitBranch, Globe, Mail, ExternalLink, Download } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Profile } from '@/types';
@@ -24,6 +24,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
   const linkedinUrl    = profile?.linkedin_url   ?? 'https://linkedin.com/in/ega-nugraha';
   const email          = profile?.email          ?? 'eganeue@gmail.com';
   const currentlyLearning = profile?.currently_learning ?? null;
+  const cvUrl             = profile?.cv_url             ?? null;
 
   const socialLinks = [
     { icon: GitBranch, href: githubUrl,           label: 'GitHub' },
@@ -83,6 +84,17 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <Link href="#contact" className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95">
                 {tr.hero.getInTouch} <Mail size={16} />
               </Link>
+              {cvUrl && (
+                <a
+                  href={cvUrl}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95"
+                >
+                  {tr.hero.downloadCV} <Download size={16} />
+                </a>
+              )}
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-3">
