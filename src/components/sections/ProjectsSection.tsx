@@ -82,7 +82,8 @@ function IotBadge() {
 
 /* ─── Project card ─── */
 function ProjectCard({ project, index, large = false }: { project: Project; index: number; large?: boolean }) {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
+  const isId = lang === 'id';
   const { ref, tilt, hovered, onMove, onEnter, onLeave } = useTilt();
   const [previewOpen, setPreviewOpen] = useState(false);
   const iot = isIoT(project);
@@ -156,7 +157,7 @@ function ProjectCard({ project, index, large = false }: { project: Project; inde
           >
             {/* Title row */}
             <div className="flex items-start gap-2 mb-2">
-              <h3 className="font-semibold text-white text-base leading-snug flex-1">{project.title}</h3>
+              <h3 className="font-semibold text-white text-base leading-snug flex-1">{(isId && project.title_id) || project.title}</h3>
               <div className="flex items-center gap-1.5 shrink-0">
                 {iot && <IotBadge />}
                 {project.is_featured && (
@@ -167,7 +168,7 @@ function ProjectCard({ project, index, large = false }: { project: Project; inde
               </div>
             </div>
 
-            <p className="text-dark-400 text-sm leading-relaxed mb-4 flex-1">{project.description}</p>
+            <p className="text-dark-400 text-sm leading-relaxed mb-4 flex-1">{(isId && project.description_id) || project.description}</p>
 
             <div className="flex flex-wrap gap-1.5 mb-4">
               {project.tech_stack.map((tech, i) => (

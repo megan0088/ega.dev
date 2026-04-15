@@ -12,12 +12,13 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ profile }: HeroSectionProps) {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
+  const isId = lang === 'id';
 
-  const name           = profile?.name           ?? 'Muhamad Ega Nugraha';
-  const title          = profile?.title          ?? 'Software Engineer & SAP B1 Technical Consultant';
-  const subtitle       = profile?.subtitle       ?? 'Building innovative digital solutions — from full-stack web apps and Flutter mobile apps to IoT systems and enterprise SAP integrations.';
-  const statusText     = profile?.status_text    ?? 'Available for opportunities';
+  const name           = profile?.name ?? 'Muhamad Ega Nugraha';
+  const title          = (isId && profile?.title_id)       || profile?.title       || 'Software Engineer & SAP B1 Technical Consultant';
+  const subtitle       = (isId && profile?.subtitle_id)    || profile?.subtitle    || 'Building innovative digital solutions — from full-stack web apps and Flutter mobile apps to IoT systems and enterprise SAP integrations.';
+  const statusText     = (isId && profile?.status_text_id) || profile?.status_text || 'Available for opportunities';
   const techBadges     = profile?.tech_badges    ?? ['Next.js', 'Flutter', 'TypeScript', 'Supabase', 'SAP B1'];
   const avatarUrl      = profile?.avatar_url     ?? null;
   const githubUrl      = profile?.github_url     ?? 'https://github.com/megan0088';
@@ -141,7 +142,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 animate={{ y: [0, 4, 0] }}
                 transition={{ repeat: Infinity, duration: 3.5, delay: 0.5 }}
               >
-                💼 SAP B1 Consultant
+                💼 {isId ? 'Konsultan SAP B1' : 'SAP B1 Consultant'}
               </motion.div>
             </div>
           </motion.div>

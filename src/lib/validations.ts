@@ -2,11 +2,13 @@ import { z } from 'zod';
 
 export const experienceSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
+  title_id: z.string().nullable().optional(),
   company: z.string().min(2, 'Company must be at least 2 characters'),
   start_date: z.string().regex(/^\d{4}-\d{2}$/, 'Use YYYY-MM format'),
   end_date: z.string().regex(/^\d{4}-\d{2}$/, 'Use YYYY-MM format').nullable().optional(),
   is_current: z.boolean(),
   description: z.array(z.string().min(1)).min(1, 'Add at least one bullet point'),
+  description_id: z.array(z.string()).nullable().optional(),
   type: z.enum(['work', 'education', 'competition']),
 });
 
@@ -14,7 +16,9 @@ export type ExperienceSchema = z.infer<typeof experienceSchema>;
 
 export const projectSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters'),
+  title_id: z.string().nullable().optional(),
   description: z.string().min(10, 'Description must be at least 10 characters'),
+  description_id: z.string().nullable().optional(),
   tech_stack: z.array(z.string().min(1)).min(1, 'Add at least one technology'),
   github_url: z.string().url('Must be a valid URL').nullable().optional().or(z.literal('')),
   live_url: z.string().url('Must be a valid URL').nullable().optional().or(z.literal('')),

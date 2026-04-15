@@ -17,7 +17,8 @@ const typeConfig = {
 };
 
 export default function ExperienceSection({ experiences }: ExperienceSectionProps) {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
+  const isId = lang === 'id';
 
   const groups = [
     { key: 'work'        as const, label: tr.experience.groups.work,        items: experiences.filter(e => e.type === 'work') },
@@ -74,7 +75,7 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
                             <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/8 hover:border-white/15 transition-all duration-300">
                               <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                                 <div>
-                                  <h4 className="font-semibold text-white text-base">{exp.title}</h4>
+                                  <h4 className="font-semibold text-white text-base">{(isId && exp.title_id) || exp.title}</h4>
                                   <p className="text-brand-400 text-sm font-medium">{exp.company}</p>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-dark-500 text-xs font-mono shrink-0">
@@ -89,7 +90,7 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
                               </div>
                               {exp.description.length > 0 && (
                                 <ul className="space-y-1.5 mt-3">
-                                  {exp.description.map((bullet, i) => (
+                                  {((isId && exp.description_id?.length ? exp.description_id : exp.description)).map((bullet, i) => (
                                     <li key={i} className="flex gap-2 text-sm text-dark-400">
                                       <span className={`${config.color} mt-0.5 shrink-0`}>▸</span>
                                       {bullet}

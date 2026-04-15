@@ -83,7 +83,7 @@ function getRelatedProjects(projects: Project[], keywords: readonly string[]): P
   );
 }
 
-function MiniProjectCard({ project, stack, index }: { project: Project; stack: typeof stacks[number]; index: number }) {
+function MiniProjectCard({ project, stack, index, isId }: { project: Project; stack: typeof stacks[number]; index: number; isId: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -99,7 +99,7 @@ function MiniProjectCard({ project, stack, index }: { project: Project; stack: t
       )}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h4 className="text-sm font-semibold text-white truncate">{project.title}</h4>
+          <h4 className="text-sm font-semibold text-white truncate">{(isId && project.title_id) || project.title}</h4>
           <div className="flex items-center gap-2 shrink-0">
             {project.github_url && (
               <a href={project.github_url} target="_blank" rel="noopener noreferrer"
@@ -111,7 +111,7 @@ function MiniProjectCard({ project, stack, index }: { project: Project; stack: t
             )}
           </div>
         </div>
-        <p className="text-dark-500 text-xs leading-relaxed line-clamp-2 mb-2">{project.description}</p>
+        <p className="text-dark-500 text-xs leading-relaxed line-clamp-2 mb-2">{(isId && project.description_id) || project.description}</p>
         <div className="flex flex-wrap gap-1">
           {project.tech_stack.slice(0, 4).map(tech => (
             <span key={tech} className={`text-[10px] px-2 py-0.5 rounded-full border font-mono ${stack.projectBadge}`}>{tech}</span>
@@ -123,11 +123,12 @@ function MiniProjectCard({ project, stack, index }: { project: Project; stack: t
 }
 
 export default function AboutSection({ profile, projects }: AboutSectionProps) {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
   const [activeId, setActiveId] = useState<StackId>('web');
+  const isId = lang === 'id';
 
-  const bio = profile?.bio ?? 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';
-  const bio2 = profile?.bio2 ?? 'Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.';
+  const bio = (isId && profile?.bio_id) || profile?.bio || 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';
+  const bio2 = (isId && profile?.bio2_id) || profile?.bio2 || 'Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.';
   const currentlyLearning = profile?.currently_learning ?? null;
 
   const activeStack = stacks.find(s => s.id === activeId)!;
@@ -322,7 +323,7 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
                   <div className="grid sm:grid-cols-2 gap-3">
                     <AnimatePresence>
                       {relatedProjects.map((project, i) => (
-                        <MiniProjectCard key={project.id} project={project} stack={activeStack} index={i} />
+                        <MiniProjectCard key={project.id} project={project} stack={activeStack} index={i} isId={isId} />
                       ))}
                     </AnimatePresence>
                   </div>

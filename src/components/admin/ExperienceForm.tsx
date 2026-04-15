@@ -35,20 +35,24 @@ export default function ExperienceForm({ onSubmit, defaultValues, isSubmitting }
     defaultValues: defaultValues
       ? {
           title: defaultValues.title,
+          title_id: defaultValues.title_id ?? '',
           company: defaultValues.company,
           start_date: defaultValues.start_date,
           end_date: defaultValues.end_date ?? undefined,
           is_current: defaultValues.is_current,
           description: defaultValues.description.length > 0 ? defaultValues.description : [''],
+          description_id: defaultValues.description_id && defaultValues.description_id.length > 0 ? defaultValues.description_id : [''],
           type: defaultValues.type,
         }
       : {
           title: '',
+          title_id: '',
           company: '',
           start_date: '',
           end_date: undefined,
           is_current: false,
           description: [''],
+          description_id: [''],
           type: 'work',
         },
   });
@@ -57,6 +61,12 @@ export default function ExperienceForm({ onSubmit, defaultValues, isSubmitting }
     control,
     // @ts-expect-error useFieldArray works with string arrays
     name: 'description',
+  });
+
+  const { fields: fieldsId, append: appendId, remove: removeId } = useFieldArray({
+    control,
+    // @ts-expect-error useFieldArray works with string arrays
+    name: 'description_id',
   });
 
   const isCurrent = watch('is_current');
@@ -69,7 +79,7 @@ export default function ExperienceForm({ onSubmit, defaultValues, isSubmitting }
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="grid grid-cols-2 gap-4">
         <Input
-          label="Job Title"
+          label="Job Title (EN)"
           placeholder="e.g. SAP B1 Technical Consultant"
           error={errors.title?.message}
           {...register('title')}
@@ -165,6 +175,52 @@ export default function ExperienceForm({ onSubmit, defaultValues, isSubmitting }
           <Plus size={15} />
           Add bullet point
         </button>
+      </div>
+
+      {/* Indonesian content */}
+      <div className="border-t border-white/10 pt-5 space-y-4">
+        <div>
+          <p className="text-xs font-semibold text-dark-500 uppercase tracking-widest mb-1">🇮🇩 Bahasa Indonesia</p>
+          <p className="text-dark-600 text-xs mb-3">Opsional — jika kosong, versi Inggris akan ditampilkan.</p>
+        </div>
+        <Input
+          label="Judul Pekerjaan (ID)"
+          placeholder="mis. Konsultan Teknis SAP B1"
+          {...register('title_id')}
+        />
+        <div>
+          <label className="block text-sm font-medium text-dark-300 mb-2">
+            Deskripsi (ID) — poin-poin
+          </label>
+          <div className="space-y-2">
+            {fieldsId.map((field, index) => (
+              <div key={field.id} className="flex gap-2">
+                <input
+                  className="flex-1 bg-dark-800/80 border border-dark-600 text-dark-100 placeholder-dark-500 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:border-brand-500 focus:ring-brand-500/20 transition-all duration-200"
+                  placeholder={`Poin ${index + 1}`}
+                  {...register(`description_id.${index}` as const)}
+                />
+                {fieldsId.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeId(index)}
+                    className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => appendId('')}
+            className="mt-2 flex items-center gap-1.5 text-sm text-brand-400 hover:text-brand-300 transition-colors"
+          >
+            <Plus size={15} />
+            Tambah poin
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-2">

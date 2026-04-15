@@ -1,11 +1,13 @@
 export interface Experience {
   id: string;
   title: string;
+  title_id?: string | null;
   company: string;
   start_date: string;
   end_date?: string | null;
   is_current: boolean;
   description: string[];
+  description_id?: string[] | null;
   type: 'work' | 'education' | 'competition';
   created_at: string;
 }
@@ -13,7 +15,9 @@ export interface Experience {
 export interface Project {
   id: string;
   title: string;
+  title_id?: string | null;
   description: string;
+  description_id?: string | null;
   tech_stack: string[];
   github_url: string | null;
   live_url: string | null;
@@ -28,11 +32,16 @@ export interface Profile {
   id: string;
   name: string;
   title: string;
+  title_id?: string | null;
   subtitle: string;
+  subtitle_id?: string | null;
   bio: string;
+  bio_id?: string | null;
   bio2: string;
+  bio2_id?: string | null;
   avatar_url: string | null;
   status_text: string;
+  status_text_id?: string | null;
   currently_learning: string | null;
   tech_badges: string[];
   github_url: string | null;

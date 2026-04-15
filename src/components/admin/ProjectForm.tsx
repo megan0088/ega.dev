@@ -28,19 +28,21 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
     resolver: zodResolver(projectSchema),
     defaultValues: defaultValues
       ? {
-          title:        defaultValues.title,
-          description:  defaultValues.description,
-          tech_stack:   defaultValues.tech_stack.length > 0 ? defaultValues.tech_stack : [''],
-          github_url:   defaultValues.github_url  ?? '',
-          live_url:     defaultValues.live_url    ?? '',
-          image_url:    defaultValues.image_url   ?? '',
-          is_featured:  defaultValues.is_featured,
-          preview_type: defaultValues.preview_type ?? null,
-          preview_url:  defaultValues.preview_url  ?? '',
+          title:          defaultValues.title,
+          title_id:       defaultValues.title_id       ?? '',
+          description:    defaultValues.description,
+          description_id: defaultValues.description_id ?? '',
+          tech_stack:     defaultValues.tech_stack.length > 0 ? defaultValues.tech_stack : [''],
+          github_url:     defaultValues.github_url  ?? '',
+          live_url:       defaultValues.live_url    ?? '',
+          image_url:      defaultValues.image_url   ?? '',
+          is_featured:    defaultValues.is_featured,
+          preview_type:   defaultValues.preview_type ?? null,
+          preview_url:    defaultValues.preview_url  ?? '',
         }
       : {
-          title: '', description: '', tech_stack: [''],
-          github_url: '', live_url: '', image_url: '',
+          title: '', title_id: '', description: '', description_id: '',
+          tech_stack: [''], github_url: '', live_url: '', image_url: '',
           is_featured: false, preview_type: null, preview_url: '',
         },
   });
@@ -57,10 +59,20 @@ export default function ProjectForm({ onSubmit, defaultValues, isSubmitting }: P
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <Input label="Project Title" placeholder="e.g. SiapAda App" error={errors.title?.message} {...register('title')} />
+      <Input label="Project Title (EN)" placeholder="e.g. SiapAda App" error={errors.title?.message} {...register('title')} />
 
-      <Textarea label="Description" placeholder="Brief description of what the project does..."
+      <Textarea label="Description (EN)" placeholder="Brief description of what the project does..."
         error={errors.description?.message} {...register('description')} />
+
+      {/* Indonesian */}
+      <div className="border border-white/10 rounded-xl p-4 space-y-3">
+        <div>
+          <p className="text-xs font-semibold text-dark-500 uppercase tracking-widest mb-0.5">🇮🇩 Bahasa Indonesia</p>
+          <p className="text-dark-600 text-xs">Opsional — jika kosong, versi Inggris akan ditampilkan.</p>
+        </div>
+        <Input label="Judul Proyek (ID)" placeholder="mis. Aplikasi SiapAda" {...register('title_id')} />
+        <Textarea label="Deskripsi (ID)" placeholder="Deskripsi singkat tentang proyek ini..." {...register('description_id')} />
+      </div>
 
       {/* Tech stack */}
       <div>

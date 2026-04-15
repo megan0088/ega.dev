@@ -16,11 +16,16 @@ import toast from 'react-hot-toast';
 const profileSchema = z.object({
   name: z.string().min(2, 'Required'),
   title: z.string().min(2, 'Required'),
+  title_id: z.string().nullable().optional(),
   subtitle: z.string().min(2, 'Required'),
+  subtitle_id: z.string().nullable().optional(),
   bio: z.string().min(10, 'Required'),
+  bio_id: z.string().nullable().optional(),
   bio2: z.string().min(10, 'Required'),
+  bio2_id: z.string().nullable().optional(),
   avatar_url: z.string().nullable().optional(),
   status_text: z.string().min(2, 'Required'),
+  status_text_id: z.string().nullable().optional(),
   currently_learning: z.string().nullable().optional(),
   tech_badges: z.array(z.string().min(1)),
   github_url: z.string().nullable().optional(),
@@ -216,6 +221,23 @@ export default function ProfileForm() {
           <div className="space-y-4">
             <Textarea label="Bio — paragraph 1" error={errors.bio?.message} placeholder="A passionate software engineer..." {...register('bio')} />
             <Textarea label="Bio — paragraph 2" error={errors.bio2?.message} placeholder="Currently working as..." {...register('bio2')} />
+          </div>
+        </div>
+
+        {/* Indonesian content */}
+        <div>
+          <h3 className="text-xs font-semibold text-dark-500 uppercase tracking-widest mb-1 flex items-center gap-3">
+            <span className="flex-1 h-px bg-white/10" />🇮🇩 Konten Bahasa Indonesia<span className="flex-1 h-px bg-white/10" />
+          </h3>
+          <p className="text-dark-600 text-xs mb-4">Opsional — jika kosong, versi Inggris akan digunakan.</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Input label="Jabatan (ID)" placeholder="Software Engineer & Konsultan SAP B1" {...register('title_id')} />
+              <Input label="Status Badge (ID)" placeholder="Tersedia untuk peluang baru" {...register('status_text_id')} />
+            </div>
+            <Textarea label="Subtitle / Tagline (ID)" placeholder="Membangun solusi digital inovatif..." {...register('subtitle_id')} />
+            <Textarea label="Bio — paragraf 1 (ID)" placeholder="Software engineer yang bersemangat..." {...register('bio_id')} />
+            <Textarea label="Bio — paragraf 2 (ID)" placeholder="Saat ini bekerja sebagai..." {...register('bio2_id')} />
           </div>
         </div>
 
