@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, ChevronRight } from 'lucide-react';
+import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, ChevronRight, Brain, Apple } from 'lucide-react';
 import Image from 'next/image';
 import type { Profile, Project } from '@/types';
 import { useLang } from '@/lib/lang-context';
@@ -16,6 +16,28 @@ interface AboutSectionProps {
 }
 
 const stacks = [
+  {
+    id: 'ai' as const,
+    icon: Brain,
+    keywords: ['ai', 'llm', 'openrouter', 'openai', 'claude', 'gpt', 'gemini', 'machine learning', 'ml', 'tensorflow', 'pytorch', 'langchain', 'rag', 'hugging face', 'huggingface', 'nlp', 'opencv', 'ocr', 'tesseract'],
+    items: ['Python', 'LLM Integration', 'Prompt Engineering', 'RAG & Vector DB', 'LangChain'],
+    glowColor: 'bg-purple-600/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-purple-400/50 hover:bg-purple-500/5 hover:text-purple-300',
+    tabActive: 'border-purple-400 bg-purple-500/15 text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.15)]',
+    iconBg: 'bg-purple-500/15', iconColor: 'text-purple-400', accent: 'text-purple-300', dot: 'bg-purple-400',
+    cardBorder: 'border-purple-500/20', cardBg: 'bg-purple-500/5', projectBadge: 'bg-purple-500/10 border-purple-500/20 text-purple-300', itemColor: 'text-purple-400',
+  },
+  {
+    id: 'ios' as const,
+    icon: Apple,
+    keywords: ['swift', 'swiftui', 'ios', 'xcode', 'uikit', 'spritekit', 'appkit', 'arkit', 'combine', 'core data', 'activitykit', 'macos'],
+    items: ['Swift', 'SwiftUI', 'UIKit', 'Xcode', 'Core Data'],
+    glowColor: 'bg-rose-600/20',
+    tabInactive: 'border-white/10 text-dark-400 hover:border-rose-400/50 hover:bg-rose-500/5 hover:text-rose-300',
+    tabActive: 'border-rose-400 bg-rose-500/15 text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.15)]',
+    iconBg: 'bg-rose-500/15', iconColor: 'text-rose-400', accent: 'text-rose-300', dot: 'bg-rose-400',
+    cardBorder: 'border-rose-500/20', cardBg: 'bg-rose-500/5', projectBadge: 'bg-rose-500/10 border-rose-500/20 text-rose-300', itemColor: 'text-rose-400',
+  },
   {
     id: 'web' as const,
     icon: Code2,
@@ -124,7 +146,7 @@ function MiniProjectCard({ project, stack, index, isId }: { project: Project; st
 
 export default function AboutSection({ profile, projects }: AboutSectionProps) {
   const { tr, lang } = useLang();
-  const [activeId, setActiveId] = useState<StackId>('web');
+  const [activeId, setActiveId] = useState<StackId>('ai');
   const isId = lang === 'id';
 
   const bio = (isId && profile?.bio_id) || profile?.bio || 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';

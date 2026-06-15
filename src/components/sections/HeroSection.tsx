@@ -137,13 +137,6 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 </motion.div>
               )}
 
-              <motion.div
-                className="absolute -top-3 -left-3 px-3 py-1.5 rounded-full bg-dark-900 border border-white/10 text-xs font-medium text-dark-300 whitespace-nowrap shadow-lg"
-                animate={{ y: [0, 4, 0] }}
-                transition={{ repeat: Infinity, duration: 3.5, delay: 0.5 }}
-              >
-                💼 {isId ? 'Konsultan SAP B1' : 'SAP B1 Consultant'}
-              </motion.div>
             </div>
           </motion.div>
         </div>

@@ -24,6 +24,8 @@ export const translations = {
       buildingHere: 'Building something here...',
       projectCount: (n: number) => `${n} ${n === 1 ? 'project' : 'projects'}`,
       stacks: {
+        ai:      { title: 'AI Engineering',        subtitle: 'LLM apps, RAG & ML' },
+        ios:     { title: 'iOS Development',        subtitle: 'Native Swift & SwiftUI apps' },
         web:     { title: 'Web Development',       subtitle: 'Full-stack modern web apps' },
         mobile:  { title: 'Mobile — Flutter',      subtitle: 'Cross-platform mobile apps' },
         backend: { title: 'Backend & Database',    subtitle: 'APIs, databases & enterprise' },
@@ -98,6 +100,8 @@ export const translations = {
       buildingHere: 'Sedang membangun sesuatu...',
       projectCount: (n: number) => `${n} proyek`,
       stacks: {
+        ai:      { title: 'AI Engineering',        subtitle: 'Aplikasi LLM, RAG & ML' },
+        ios:     { title: 'iOS Development',        subtitle: 'Aplikasi native Swift & SwiftUI' },
         web:     { title: 'Web Development',       subtitle: 'Aplikasi web modern full-stack' },
         mobile:  { title: 'Mobile — Flutter',      subtitle: 'Aplikasi mobile lintas platform' },
         backend: { title: 'Backend & Database',    subtitle: 'API, database & sistem enterprise' },

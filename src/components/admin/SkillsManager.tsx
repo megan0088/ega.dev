@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, ChevronDown, ChevronRight, ChevronUp, Loader2 } from 'lucide-react';
 import {
   getSkillCategories, getSkills,
   createSkillCategory, updateSkillCategory, deleteSkillCategory,
@@ -83,6 +83,29 @@ export default function SkillsManager() {
       toast.error(err instanceof Error ? err.message : 'Failed');
     } finally {
       setCatSaving(false);
+    }
+  };
+
+  const moveCategory = async (index: number, dir: -1 | 1) => {
+    const target = index + dir;
+    if (target < 0 || target >= categories.length) return;
+    const a = categories[index];
+    const b = categories[target];
+    const prev = categories;
+    // Swap sort_order values, then re-sort by sort_order
+    const reordered = categories
+      .map(c => c.id === a.id ? { ...a, sort_order: b.sort_order }
+              : c.id === b.id ? { ...b, sort_order: a.sort_order } : c)
+      .sort((x, y) => x.sort_order - y.sort_order);
+    setCategories(reordered); // optimistic
+    try {
+      await Promise.all([
+        updateSkillCategory(a.id, { sort_order: b.sort_order }),
+        updateSkillCategory(b.id, { sort_order: a.sort_order }),
+      ]);
+    } catch (err) {
+      setCategories(prev); // revert
+      toast.error(err instanceof Error ? err.message : 'Failed to reorder');
     }
   };
 
@@ -167,7 +190,7 @@ export default function SkillsManager() {
         </div>
       ) : (
         <div className="space-y-3">
-          {categories.map(cat => {
+          {categories.map((cat, index) => {
             const catSkills = skills.filter(s => s.category_id === cat.id);
             const isOpen = expanded === cat.id;
             return (
@@ -181,6 +204,18 @@ export default function SkillsManager() {
                   <div className={`h-1 w-6 rounded-full bg-gradient-to-r ${cat.color}`} />
                   <span className="flex-1 text-white font-medium text-sm">{cat.name}</span>
                   <span className="text-dark-500 text-xs">{catSkills.length} skills</span>
+                  <div className="flex flex-col -my-1">
+                    <button onClick={() => moveCategory(index, -1)} disabled={index === 0}
+                      title="Move up"
+                      className="p-0.5 rounded text-dark-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-25 disabled:hover:bg-transparent disabled:cursor-not-allowed">
+                      <ChevronUp size={14} />
+                    </button>
+                    <button onClick={() => moveCategory(index, 1)} disabled={index === categories.length - 1}
+                      title="Move down"
+                      className="p-0.5 rounded text-dark-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-25 disabled:hover:bg-transparent disabled:cursor-not-allowed">
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
                   <button onClick={() => openCatModal(cat)}
                     className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-white/10 transition-colors">
                     <Edit2 size={13} />
