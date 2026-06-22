@@ -15,12 +15,19 @@ interface ProjectsSectionProps {
 
 const badgeVariants = ['blue', 'purple', 'cyan', 'emerald', 'rose'] as const;
 
-const IOT_KEYWORDS = ['mqtt', 'blynk', 'esp', 'raspberry', 'arduino', 'iot', 'embedded', 'hardware', 'c#', '.net', 'sensor'];
+const IOT_KEYWORDS = ['mqtt', 'blynk', 'esp', 'esp8266', 'esp32', 'raspberry', 'arduino', 'iot', 'embedded', 'hardware', 'c#', '.net', 'sensor'];
+
+// Whole-word matching so 'esp' doesn't match 'response', 'iot' stays specific, etc.
+const IOT_PATTERNS = IOT_KEYWORDS.map(kw => {
+  const escaped = kw.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, 'i');
+});
 
 function isIoT(project: Project) {
-  return project.tech_stack.some(t =>
-    IOT_KEYWORDS.some(kw => t.toLowerCase().includes(kw))
-  );
+  return project.tech_stack.some(t => {
+    const tech = t.toLowerCase();
+    return IOT_PATTERNS.some(re => re.test(tech));
+  });
 }
 
 const previewTypeIcon = {
@@ -237,10 +244,8 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>{tr.projects.tag}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">{tr.projects.title}</h2>
+          <span className="section-label mb-5">04 // {tr.projects.tag}</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">{tr.projects.title}</h2>
         </motion.div>
 
         {projects.length === 0 ? (

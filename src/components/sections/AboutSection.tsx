@@ -97,11 +97,18 @@ const stacks = [
 
 type StackId = typeof stacks[number]['id'];
 
+// Match keyword as a whole word (not substring) — so 'ai' doesn't match 'Tailwind',
+// 'ml' doesn't match 'HTML', 'rag' doesn't match 'Storage', etc.
 function getRelatedProjects(projects: Project[], keywords: readonly string[]): Project[] {
+  const patterns = keywords.map(kw => {
+    const escaped = kw.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, 'i');
+  });
   return projects.filter(p =>
-    p.tech_stack.some(tech =>
-      keywords.some(kw => tech.toLowerCase().includes(kw.toLowerCase()))
-    )
+    p.tech_stack.some(tech => {
+      const t = tech.toLowerCase();
+      return patterns.some(re => re.test(t));
+    })
   );
 }
 
@@ -180,10 +187,8 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>{tr.about.tag}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{tr.about.title}</h2>
+          <span className="section-label mb-5">01 // {tr.about.tag}</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">{tr.about.title}</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <p className="text-dark-400 text-lg leading-relaxed">{bio}</p>
             <div className="flex flex-col gap-3">
