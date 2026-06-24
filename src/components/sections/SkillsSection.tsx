@@ -54,8 +54,6 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
 
   return (
     <section id="skills" className="relative py-32 px-6 overflow-hidden">
-      <div className="glow-orb w-[400px] h-[400px] bg-brand-600/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -63,10 +61,8 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>{tr.skills.tag}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">{tr.skills.title}</h2>
+          <span className="section-label mb-5">02 // {tr.skills.tag}</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">{tr.skills.title}</h2>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

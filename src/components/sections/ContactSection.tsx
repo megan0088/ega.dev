@@ -27,8 +27,6 @@ export default function ContactSection({ profile }: ContactSectionProps) {
 
   return (
     <section id="contact" className="relative py-32 px-6 overflow-hidden">
-      <div className="glow-orb w-[400px] h-[400px] bg-brand-600/10 bottom-0 left-1/2 -translate-x-1/2" />
-
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -36,10 +34,8 @@ export default function ContactSection({ profile }: ContactSectionProps) {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>{tr.contact.tag}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{tr.contact.title}</h2>
+          <span className="section-label mb-5 justify-center">05 // {tr.contact.tag}</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">{tr.contact.title}</h2>
           <p className="text-dark-400 text-lg max-w-xl mx-auto leading-relaxed">{tr.contact.desc}</p>
         </motion.div>
 

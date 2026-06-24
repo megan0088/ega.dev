@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Menu, X, Code2 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState('');
   const { tr } = useLang();
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   const navLinks = [
     { href: '#home',       label: tr.nav.home },
@@ -58,11 +60,11 @@ export default function Navbar() {
         transition={{ duration: 0.5 }}
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-white">
-            <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center">
+          <Link href="/" className="group flex items-center gap-2 font-bold text-white" aria-label="ega.dev — beranda">
+            <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 group-hover:rotate-3">
               <Code2 size={14} className="text-white" />
             </div>
-            <span className="font-mono text-sm">ega.dev</span>
+            <span className="font-display text-sm tracking-tight">ega.dev</span>
           </Link>
 
           {/* Desktop nav */}
@@ -71,14 +73,22 @@ export default function Navbar() {
               <a
                 key={href}
                 href={href}
+                aria-current={active === href ? 'true' : undefined}
                 className={cn(
-                  'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                  'relative px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200',
                   active === href
-                    ? 'text-white bg-white/10'
+                    ? 'text-white'
                     : 'text-dark-400 hover:text-white hover:bg-white/5'
                 )}
               >
-                {label}
+                {active === href && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute inset-0 rounded-lg bg-white/10"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
               </a>
             ))}
           </nav>
@@ -96,6 +106,12 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+        {/* Scroll progress */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-px origin-left bg-gradient-to-r from-brand-500 via-accent-cyan to-accent-purple"
+          style={{ scaleX: progress }}
+          aria-hidden="true"
+        />
       </motion.header>
 
       {/* Mobile menu */}

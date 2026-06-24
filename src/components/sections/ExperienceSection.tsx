@@ -28,8 +28,6 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
 
   return (
     <section id="experience" className="relative py-32 px-6 overflow-hidden">
-      <div className="glow-orb w-[400px] h-[400px] bg-brand-600/10 bottom-0 left-0" />
-
       <div className="max-w-4xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -37,10 +35,8 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-dark-400 text-sm font-mono mb-6">
-            <span className="text-brand-400">// </span>{tr.experience.tag}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">{tr.experience.title}</h2>
+          <span className="section-label mb-5">03 // {tr.experience.tag}</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">{tr.experience.title}</h2>
         </motion.div>
 
         {experiences.length === 0 ? (

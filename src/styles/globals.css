@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -273,7 +273,19 @@ html.light .bg-white\/10 { background-color: rgba(255,85,0,0.08) !important; }
     @apply bg-white/10 backdrop-blur-xl border border-white/20;
   }
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-400 via-accent-cyan to-accent-purple bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-400 to-accent-purple bg-clip-text text-transparent;
+  }
+  .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  /* Numbered section eyebrow — e.g. "01 // skills" */
+  .section-label {
+    @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-400;
+  }
+  .section-label::before {
+    content: '';
+    @apply inline-block h-px w-8 bg-brand-500/60;
   }
   .section-padding {
     @apply py-24 px-6 md:px-12 lg:px-24;
@@ -282,7 +294,7 @@ html.light .bg-white\/10 { background-color: rgba(255,85,0,0.08) !important; }
     @apply max-w-6xl mx-auto;
   }
   .card {
-    @apply glass rounded-2xl p-6 transition-all duration-300 hover:bg-white/10 hover:border-white/20;
+    @apply glass rounded-2xl p-6 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5;
   }
   .btn-primary {
     @apply inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 shadow-glow-sm hover:shadow-glow active:scale-95;
@@ -309,3 +321,24 @@ html.light .bg-white\/10 { background-color: rgba(255,85,0,0.08) !important; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
+
+/* ============================================================
+   Accessibility — respect reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .glow-orb, .gradient-text { animation: none !important; }
+}
+
+/* Visible keyboard focus ring (kept off for mouse via :focus-visible) */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+html.light :focus-visible { outline-color: #FF5500; }
