@@ -4,14 +4,19 @@ import { motion } from 'framer-motion';
 import { ArrowDown, GitBranch, Globe, Mail, ExternalLink, Download, BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Profile } from '@/types';
+import type { Experience, Profile, Project } from '@/types';
 import { useLang } from '@/lib/lang-context';
+import { splitRoles } from '@/lib/stack-match';
+import RoleTypewriter from '@/components/ui/RoleTypewriter';
+import CountUp from '@/components/ui/CountUp';
 
 interface HeroSectionProps {
   profile: Profile | null;
+  projects?: Project[];
+  experiences?: Experience[];
 }
 
-export default function HeroSection({ profile }: HeroSectionProps) {
+export default function HeroSection({ profile, projects = [], experiences = [] }: HeroSectionProps) {
   const { tr, lang } = useLang();
   const isId = lang === 'id';
 
@@ -32,6 +37,15 @@ export default function HeroSection({ profile }: HeroSectionProps) {
     { icon: Globe,     href: linkedinUrl,          label: 'LinkedIn' },
     { icon: Mail,      href: `mailto:${email}`,    label: 'Email' },
   ];
+
+  const roles = splitRoles(title);
+
+  // Numbers come straight from the portfolio data, so they stay true as content changes.
+  const stats = [
+    { label: tr.hero.stats.projects,     value: projects.length },
+    { label: tr.hero.stats.technologies, value: new Set(projects.flatMap(p => p.tech_stack.map(t => t.toLowerCase()))).size },
+    { label: tr.hero.stats.roles,        value: experiences.filter(e => e.type === 'work').length },
+  ].filter(s => s.value > 0);
 
   const nameParts = name.split(' ');
   const firstName = nameParts[0];
@@ -71,7 +85,9 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             </motion.h1>
 
             <motion.p variants={fadeUp} custom={2} initial="hidden" animate="show"
-              className="text-xl md:text-2xl text-dark-300 mb-4 font-medium">{title}</motion.p>
+              className="text-xl md:text-2xl text-dark-300 mb-4 font-medium min-h-[1.75em]">
+              <RoleTypewriter key={title} roles={roles} />
+            </motion.p>
             <motion.p variants={fadeUp} custom={3} initial="hidden" animate="show"
               className="text-base text-dark-400 max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed">{subtitle}</motion.p>
 
@@ -86,8 +102,8 @@ export default function HeroSection({ profile }: HeroSectionProps) {
 
             <motion.div variants={fadeUp} custom={5} initial="hidden" animate="show"
               className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-10">
-              <Link href="#experience" className="group inline-flex items-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 shadow-glow-sm hover:shadow-glow active:scale-95">
-                {tr.hero.viewExperience} <ExternalLink size={16} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+              <Link href="#projects" className="group inline-flex items-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 shadow-glow-sm hover:shadow-glow active:scale-95">
+                {tr.hero.viewProjects} <ExternalLink size={16} className="transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
               <Link href="#contact" className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95">
                 {tr.hero.getInTouch} <Mail size={16} />
@@ -105,7 +121,19 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               )}
             </motion.div>
 
-            <motion.div variants={fadeUp} custom={6} initial="hidden" animate="show"
+            {stats.length > 0 && (
+              <motion.dl variants={fadeUp} custom={6} initial="hidden" animate="show"
+                className="flex flex-wrap justify-center md:justify-start gap-x-10 gap-y-4 mb-10">
+                {stats.map(({ label, value }) => (
+                  <div key={label} className="flex flex-col-reverse text-center md:text-left">
+                    <dt className="text-xs text-dark-500 mt-1">{label}</dt>
+                    <dd className="font-display text-3xl font-bold text-white"><CountUp value={value} /></dd>
+                  </div>
+                ))}
+              </motion.dl>
+            )}
+
+            <motion.div variants={fadeUp} custom={7} initial="hidden" animate="show"
               className="flex items-center justify-center md:justify-start gap-3">
               {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}

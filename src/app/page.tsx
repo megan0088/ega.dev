@@ -5,10 +5,12 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/sections/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
+import StorySection from '@/components/sections/StorySection';
 import SkillsSection from '@/components/sections/SkillsSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import ContactSection from '@/components/sections/ContactSection';
+import RecruiterSnapshot from '@/components/sections/RecruiterSnapshot';
 import type { Experience, Project, Profile, SkillCategory, Skill } from '@/types';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -60,12 +62,14 @@ export default async function HomePage() {
   return (
     <main>
       <Navbar />
-      <HeroSection profile={profile} />
+      <HeroSection profile={profile} projects={projects} experiences={experiences} />
       <AboutSection profile={profile} projects={projects} />
+      <StorySection />
       <SkillsSection categories={skillCategories} skills={skills} />
       <ExperienceSection experiences={experiences} />
       <ProjectsSection projects={projects} />
       <ContactSection profile={profile} />
+      <RecruiterSnapshot profile={profile} experiences={experiences} projects={projects} skills={skills} />
     </main>
   );
 }

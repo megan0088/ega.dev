@@ -7,6 +7,7 @@ import { Code2, Cpu, Database, Smartphone, Box, GitBranch, ExternalLink, Chevron
 import Image from 'next/image';
 import type { Profile, Project } from '@/types';
 import { useLang } from '@/lib/lang-context';
+import { getRelatedProjects } from '@/lib/stack-match';
 
 const SkillsWebGLCanvas = dynamic(() => import('@/components/ui/SkillsWebGLCanvas'), { ssr: false });
 
@@ -97,21 +98,6 @@ const stacks = [
 
 type StackId = typeof stacks[number]['id'];
 
-// Match keyword as a whole word (not substring) — so 'ai' doesn't match 'Tailwind',
-// 'ml' doesn't match 'HTML', 'rag' doesn't match 'Storage', etc.
-function getRelatedProjects(projects: Project[], keywords: readonly string[]): Project[] {
-  const patterns = keywords.map(kw => {
-    const escaped = kw.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, 'i');
-  });
-  return projects.filter(p =>
-    p.tech_stack.some(tech => {
-      const t = tech.toLowerCase();
-      return patterns.some(re => re.test(t));
-    })
-  );
-}
-
 function MiniProjectCard({ project, stack, index, isId }: { project: Project; stack: typeof stacks[number]; index: number; isId: boolean }) {
   return (
     <motion.div
@@ -153,8 +139,16 @@ function MiniProjectCard({ project, stack, index, isId }: { project: Project; st
 
 export default function AboutSection({ profile, projects }: AboutSectionProps) {
   const { tr, lang } = useLang();
-  const [activeId, setActiveId] = useState<StackId>('ai');
+  const [selectedId, setSelectedId] = useState<StackId | null>(null);
   const isId = lang === 'id';
+
+  // Only show stacks that have at least one project to back them up.
+  // (Before any project exists, show everything so the section isn't empty.)
+  const stacksWithProjects = stacks.filter(s => getRelatedProjects(projects, s.keywords).length > 0);
+  const visibleStacks = stacksWithProjects.length > 0 ? stacksWithProjects : stacks;
+  const activeId: StackId = visibleStacks.some(s => s.id === selectedId) ? selectedId! : visibleStacks[0].id;
+  const setActiveId = setSelectedId;
+  const tabGridCols = ({ 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4', 5: 'lg:grid-cols-5', 6: 'lg:grid-cols-6', 7: 'lg:grid-cols-4' } as Record<number, string>)[visibleStacks.length] ?? 'lg:grid-cols-4';
 
   const bio = (isId && profile?.bio_id) || profile?.bio || 'A passionate software engineer with a Diploma in Computer Engineering from IPB University. I specialize in building full-stack web apps, cross-platform mobile apps, and enterprise SAP B1 integrations.';
   const bio2 = (isId && profile?.bio2_id) || profile?.bio2 || 'Currently working as a SAP B1 Technical Consultant at Soltius Indonesia — developing custom Add-ons, optimizing stored procedures, and integrating SAP with AI systems.';
@@ -214,15 +208,17 @@ export default function AboutSection({ profile, projects }: AboutSectionProps) {
           className="mb-4"
         >
           <p className="text-dark-500 text-xs font-mono mb-4 uppercase tracking-widest">{tr.about.selectStack}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {stacks.map((stack) => {
+          <div className={`grid sm:grid-cols-2 ${tabGridCols} gap-3`}>
+            {visibleStacks.map((stack) => {
               const isActive = activeId === stack.id;
               const label = tr.about.stacks[stack.id];
               const related = getRelatedProjects(projects, stack.keywords);
               return (
                 <button
                   key={stack.id}
+                  type="button"
                   onClick={() => setActiveId(stack.id)}
+                  aria-pressed={isActive}
                   className={`relative text-left p-5 rounded-2xl border transition-all duration-300 ${isActive ? stack.tabActive : stack.tabInactive}`}
                 >
                   {isActive && (

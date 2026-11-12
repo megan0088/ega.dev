@@ -1,9 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, Phone, Globe, AtSign, MapPin, Send } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Mail, Phone, Globe, AtSign, MapPin, Send, Copy, MessageCircle } from 'lucide-react';
 import type { Profile } from '@/types';
 import { useLang } from '@/lib/lang-context';
+import { toWhatsAppNumber } from '@/lib/stack-match';
 
 interface ContactSectionProps {
   profile: Profile | null;
@@ -16,6 +18,15 @@ export default function ContactSection({ profile }: ContactSectionProps) {
   const phone       = profile?.phone         ?? '+62 812-9314-8932';
   const linkedinUrl = profile?.linkedin_url  ?? 'https://linkedin.com/in/ega-nugraha';
   const instagramUrl= profile?.instagram_url ?? 'https://instagram.com/eganugraha08';
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      toast.success(tr.contact.copied);
+    } catch {
+      toast.error(tr.contact.copyFailed);
+    }
+  };
 
   const contacts = [
     { icon: Mail,   label: 'Email',    value: email,                                     href: `mailto:${email}` },
@@ -34,7 +45,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="section-label mb-5 justify-center">05 // {tr.contact.tag}</span>
+          <span className="section-label mb-5 justify-center">06 // {tr.contact.tag}</span>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">{tr.contact.title}</h2>
           <p className="text-dark-400 text-lg max-w-xl mx-auto leading-relaxed">{tr.contact.desc}</p>
         </motion.div>
@@ -71,12 +82,23 @@ export default function ContactSection({ profile }: ContactSectionProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3"
         >
           <a href={`mailto:${email}`}
             className="inline-flex items-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white font-medium rounded-xl transition-all duration-200 shadow-glow hover:shadow-glow-lg active:scale-95 text-base">
             <Send size={18} />
             {tr.contact.sendEmail}
           </a>
+          <a href={`https://wa.me/${toWhatsAppNumber(phone)}`} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95 text-base">
+            <MessageCircle size={18} />
+            {tr.contact.whatsapp}
+          </a>
+          <button type="button" onClick={copyEmail}
+            className="inline-flex items-center gap-2 px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20 active:scale-95 text-base">
+            <Copy size={18} />
+            {tr.contact.copyEmail}
+          </button>
         </motion.div>
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, ExternalLink, Star, Play, Box, Video, Layers, Globe } from 'lucide-react';
 import Image from 'next/image';
@@ -8,6 +8,9 @@ import type { Project } from '@/types';
 import Badge from '@/components/ui/Badge';
 import ProjectPreviewModal from '@/components/ui/ProjectPreviewModal';
 import { useLang } from '@/lib/lang-context';
+import { PROJECT_CATEGORIES, buildPatterns, matchesKeywords, type ProjectCategoryId } from '@/lib/stack-match';
+
+type FilterId = 'all' | 'featured' | ProjectCategoryId;
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -230,8 +233,26 @@ function ProjectCard({ project, index, large = false }: { project: Project; inde
 /* ─── Section ─── */
 export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   const { tr } = useLang();
-  const featured = projects.filter(p => p.is_featured);
-  const rest      = projects.filter(p => !p.is_featured);
+  const [filter, setFilter] = useState<FilterId>('all');
+
+  // Bucket projects once; only categories that actually have projects become filter chips.
+  const buckets = useMemo(() => {
+    const map: Record<FilterId, Project[]> = {
+      all: projects,
+      featured: projects.filter(p => p.is_featured),
+      ai: [], ios: [], web: [], mobile: [], backend: [], iot: [],
+    };
+    for (const category of PROJECT_CATEGORIES) {
+      const patterns = buildPatterns(category.keywords);
+      map[category.id] = projects.filter(p => matchesKeywords(p, patterns));
+    }
+    return map;
+  }, [projects]);
+
+  const filterIds: FilterId[] = (['all', 'featured', ...PROJECT_CATEGORIES.map(c => c.id)] as FilterId[])
+    .filter(id => id === 'all' || buckets[id].length > 0);
+  const visible = buckets[filter];
+  const isFiltered = filter !== 'all';
 
   return (
     <section id="projects" className="relative py-32 px-6 overflow-hidden">
@@ -242,29 +263,70 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-10"
         >
-          <span className="section-label mb-5">04 // {tr.projects.tag}</span>
+          <span className="section-label mb-5">05 // {tr.projects.tag}</span>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">{tr.projects.title}</h2>
         </motion.div>
+
+        {filterIds.length > 2 && (
+          <div className="mb-8 flex flex-wrap items-center gap-2" role="group" aria-label={tr.projects.filterLabel}>
+            {filterIds.map(id => {
+              const isActive = filter === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setFilter(id)}
+                  aria-pressed={isActive}
+                  className={`relative inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200
+                    ${isActive ? 'border-brand-500 text-white' : 'border-white/10 text-dark-400 hover:text-white hover:border-white/20'}`}
+                >
+                  {isActive && (
+                    <motion.span layoutId="project-filter-active" className="absolute inset-0 rounded-full bg-brand-500/20"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
+                  )}
+                  <span className="relative z-10">{tr.projects.filters[id]}</span>
+                  <span className={`relative z-10 text-xs font-mono ${isActive ? 'text-brand-300' : 'text-dark-600'}`}>{buckets[id].length}</span>
+                </button>
+              );
+            })}
+            {isFiltered && (
+              <span className="ml-auto text-xs font-mono text-dark-500" aria-live="polite">
+                {tr.projects.showing(visible.length, projects.length)}
+              </span>
+            )}
+          </div>
+        )}
 
         {projects.length === 0 ? (
           <div className="text-center py-20 text-dark-500">{tr.projects.empty}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4 auto-rows-auto">
-            {projects.map((project, i) => {
-              const pattern = bentoPatterns[i % bentoPatterns.length];
-              // Featured always get the big tile
-              const isFeaturedBig = project.is_featured && i === 0;
-              const colSpan  = isFeaturedBig ? 'md:col-span-4' : (project.is_featured ? 'md:col-span-3' : pattern.col);
-              const rowClass  = (isFeaturedBig || pattern.tall) ? 'md:row-span-2' : '';
+            <AnimatePresence mode="popLayout" initial={false}>
+              {visible.map((project, i) => {
+                const pattern = bentoPatterns[i % bentoPatterns.length];
+                // Bento rhythm for the full list; an even grid once a filter narrows it down.
+                const isFeaturedBig = !isFiltered && project.is_featured && i === 0;
+                const colSpan  = isFiltered ? 'md:col-span-3 lg:col-span-2'
+                  : isFeaturedBig ? 'md:col-span-4' : (project.is_featured ? 'md:col-span-3' : pattern.col);
+                const isTall   = !isFiltered && (isFeaturedBig || pattern.tall);
 
-              return (
-                <div key={project.id} className={`${colSpan} ${rowClass} group`}>
-                  <ProjectCard project={project} index={i} large={isFeaturedBig || pattern.tall} />
-                </div>
-              );
-            })}
+                return (
+                  <motion.div
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    className={`${colSpan} ${isTall ? 'md:row-span-2' : ''} group`}
+                  >
+                    <ProjectCard project={project} index={isFiltered ? 0 : i} large={isTall} />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         )}
       </div>

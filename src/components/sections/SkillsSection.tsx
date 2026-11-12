@@ -61,7 +61,7 @@ export default function SkillsSection({ categories, skills }: SkillsSectionProps
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="section-label mb-5">02 // {tr.skills.tag}</span>
+          <span className="section-label mb-5">03 // {tr.skills.tag}</span>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">{tr.skills.title}</h2>
         </motion.div>
 

@@ -5,7 +5,37 @@ export const alt = 'Muhamad Ega Nugraha — Software Engineer';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default function OgImage() {
+const FALLBACK = {
+  name: 'Muhamad Ega Nugraha',
+  title: 'Software Engineer',
+  tech_badges: ['Swift', 'SwiftUI', 'Next.js', 'TypeScript'],
+};
+
+// Read name/title/badges from the same profile row the page uses, so the
+// link preview on LinkedIn/WhatsApp always matches the site.
+async function getProfile(): Promise<typeof FALLBACK> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return FALLBACK;
+  try {
+    const res = await fetch(`${url}/rest/v1/profile?select=name,title,tech_badges&limit=1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return FALLBACK;
+    const [row] = (await res.json()) as Partial<typeof FALLBACK>[];
+    return {
+      name: row?.name || FALLBACK.name,
+      title: row?.title || FALLBACK.title,
+      tech_badges: row?.tech_badges?.length ? row.tech_badges.slice(0, 5) : FALLBACK.tech_badges,
+    };
+  } catch {
+    return FALLBACK;
+  }
+}
+
+export default async function OgImage() {
+  const profile = await getProfile();
   return new ImageResponse(
     (
       <div
@@ -54,15 +84,15 @@ export default function OgImage() {
           </div>
 
           <div style={{ fontSize: 60, fontWeight: 800, color: 'white', textAlign: 'center', lineHeight: 1.1 }}>
-            Muhamad Ega Nugraha
+            {profile.name}
           </div>
 
           <div style={{ fontSize: 28, color: '#6366f1', fontWeight: 500, textAlign: 'center' }}>
-            Software Engineer & SAP B1 Technical Consultant
+            {profile.title}
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-            {['Next.js', 'Flutter', 'TypeScript', 'SAP B1'].map((tech) => (
+            {profile.tech_badges.map((tech) => (
               <div key={tech} style={{
                 padding: '6px 16px', borderRadius: 999,
                 background: 'rgba(255,255,255,0.05)',

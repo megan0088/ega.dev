@@ -11,9 +11,9 @@ export function formatDate(dateString: string): string {
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
-export function formatDateRange(startDate: string, endDate: string | null | undefined, isCurrent: boolean): string {
+export function formatDateRange(startDate: string, endDate: string | null | undefined, isCurrent: boolean, presentLabel = 'Present'): string {
   const start = formatDate(startDate);
-  if (isCurrent) return `${start} – Present`;
+  if (isCurrent) return `${start} – ${presentLabel}`;
   if (!endDate) return start;
   return `${start} – ${formatDate(endDate)}`;
 }

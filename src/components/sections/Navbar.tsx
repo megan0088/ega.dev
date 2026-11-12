@@ -20,6 +20,7 @@ export default function Navbar() {
   const navLinks = [
     { href: '#home',       label: tr.nav.home },
     { href: '#about',      label: tr.nav.about },
+    { href: '#story',      label: tr.nav.story },
     { href: '#skills',     label: tr.nav.skills },
     { href: '#experience', label: tr.nav.experience },
     { href: '#projects',   label: tr.nav.projects },
@@ -41,7 +42,7 @@ export default function Navbar() {
       },
       { rootMargin: '-40% 0px -60% 0px' }
     );
-    ['home','about','skills','experience','projects','contact'].forEach(id => {
+    ['home','about','story','skills','experience','projects','contact'].forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });

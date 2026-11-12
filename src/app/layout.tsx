@@ -9,22 +9,20 @@ const BASE_URL = 'https://ega-dev.vercel.app';
 
 export const metadata: Metadata = {
   title: 'Muhamad Ega Nugraha — Software Engineer',
-  description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant based in Indonesia. Building innovative digital solutions.',
-  keywords: ['Software Engineer', 'Flutter', 'Next.js', 'SAP B1', 'Full Stack'],
+  description: 'Software engineer based in Indonesia building native iOS apps with Swift and SwiftUI, AI-powered products, and full-stack web apps — with enterprise SAP Business One experience.',
+  keywords: ['Software Engineer', 'iOS Developer', 'Swift', 'SwiftUI', 'AI Engineer', 'LLM', 'Next.js', 'Flutter', 'SAP Business One', 'Indonesia'],
   authors: [{ name: 'Muhamad Ega Nugraha', url: BASE_URL }],
   metadataBase: new URL(BASE_URL),
   openGraph: {
     title: 'Muhamad Ega Nugraha — Software Engineer',
-    description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant.',
+    description: 'iOS, AI, and full-stack software engineer based in Indonesia.',
     type: 'website',
     url: BASE_URL,
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Muhamad Ega Nugraha — Software Engineer' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Muhamad Ega Nugraha — Software Engineer',
-    description: 'Full-stack developer, Flutter engineer, and SAP B1 Technical Consultant.',
-    images: ['/og-image.png'],
+    description: 'iOS, AI, and full-stack software engineer based in Indonesia.',
   },
 };
 
